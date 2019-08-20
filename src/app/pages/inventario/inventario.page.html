@@ -1,0 +1,112 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Inventario</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [@animacionPagina]>
+    <ion-card>
+      <div class="cardConfiguracionTitulo"> 
+        <ion-icon  name="md-build"></ion-icon>
+        <label>
+          Opciones
+        </label>
+      </div>
+      <ion-card-content>
+          <div class="opsWrapper">
+            <div class="ops">
+              <label >En Limite</label>
+              <ion-toggle color="danger" slot="end" [(ngModel)]="filtroLimite"></ion-toggle>        
+            </div>
+            <div class="ops">
+              <label >Mostrar Todo</label>
+              <ion-toggle color="primary" slot="end" [(ngModel)]="todosLosArticulos"></ion-toggle>        
+            </div>
+            <div class="ops">              
+              <ion-button (click)="generarPedido()"><ion-icon slot="start" name="md-download"></ion-icon> Generar Pedido</ion-button>
+            </div>
+          </div>
+      </ion-card-content>
+    </ion-card>
+  <ion-card *ngIf="!todosLosArticulos" [@animacionNgIf] class="tarjetas tarjetaBusqueda" style="background:var(--ion-color-light-tint)">
+    <!-- Busqueda De Articulos -->
+  <div class="divEtiquetaBusqueda" >        
+    <label><ion-icon name="search" ></ion-icon>Búsqueda De Artículos</label>
+  </div>
+  <ion-card-content  no-padding no-margin>
+      <div class="flexBoxBusqueda">
+        <div class="divBarraBusqueda">      
+          <ion-searchbar style="border-radius: 6px;"
+            [(ngModel)]="busqueda"(ionCancel)="onCancel($event)" (ionChange)="search()" debounce="800"
+            placeholder="Nombre Producto">
+          </ion-searchbar>
+        </div>
+        <div class="divBarraBusqueda">        
+          <ion-searchbar 
+            [(ngModel)]="busquedaCodigo"  (ionCancel)="onCancel($event)" (ionChange)="searchCodigo()" debounce="1000"
+            placeholder="Código Producto">
+          </ion-searchbar>
+        </div>
+         <div class="divCampoBusqueda"> 
+          <ion-item style="--border-radius: 6px;">
+            <ion-label  position="stacked">
+              Categoría
+            </ion-label>
+            <ion-select (ionChange)="search()" [(ngModel)]="tipoFiltro" interface="action-sheet"  >
+                <ion-select-option mode="ios" selected="true" value="" ></ion-select-option>
+                <ion-select-option *ngFor="let tipo of categorias"  value="{{tipo.nombre}}">{{tipo.nombre}}</ion-select-option>
+            </ion-select>
+          </ion-item>	
+        </div>
+        <div class="divCampoBusqueda"> 				
+          <ion-item style="--border-radius: 6px;">
+            <ion-label  position="stacked">
+              Marca
+            </ion-label>
+            <ion-select  (ionChange)="search()" [(ngModel)]="marcaFiltro" interface="action-sheet"  >
+                <ion-select-option  selected="true" value=""></ion-select-option>
+                <ion-select-option *ngFor="let marca of marcas"  value="{{marca.nombre}}">{{marca.nombre}}</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </div> 
+        <div class="divCampoBusqueda"> 				
+          <ion-item style="--border-radius: 6px;">
+            <ion-label  position="stacked">
+              Proveedor
+            </ion-label>
+            <ion-select (ionChange)="search()" [(ngModel)]="proveedorFiltro" interface="action-sheet">
+              <ion-select-option  selected="true" value=""></ion-select-option>
+              <ion-select-option *ngFor="let proveedor of proveedores"  value="{{proveedor.nombre}}">{{proveedor.nombre}}</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </div> 
+      </div>
+  </ion-card-content> 
+</ion-card>
+    <!-- TABLA DE ARTICULOS PARA SELECCIONAR -->
+    <ion-card class="cardTablaResultados" *ngIf="existenArticulos()"  [@animacionTablaItems] >
+      <div class="tablaGridContainer" >
+        <div *ngFor="let cabecera of cabeceras" class="cabeceraTabla" [ngClass]="cabecera.necesario ? '': 'bajar'" >
+          {{cabecera.cabecera}}
+        </div>
+        <ng-container *ngFor="let articulo of articulos;let odd=odd;let i=index" class="filaTabla">
+          <div class="filaTabla" id="fila{{i}}" (click)="selectItem(articulo, 'fila',i)">        
+            <div *ngFor="let cabecera of cabeceras" class="itemFila odd{{odd}}" [ngClass]="cabecera.necesario ? '': 'bajar'">
+              <ng-container *ngIf="cabecera.key=='precio'"  ><small>Q</small></ng-container>{{articulo[cabecera.key]}}
+            </div>
+            <div class="infoExtra"> 
+                <ng-container  *ngFor="let cabecera of cabeceras"  > 
+                  <ng-container *ngIf="cabecera.necesario==false"  >
+                  {{cabecera.cabecera | titlecase}}: {{articulo[cabecera.key]}} &nbsp;
+                  </ng-container>    
+                </ng-container>  
+            </div>
+          </div>
+        </ng-container>
+      </div>
+  </ion-card>
+  <!-- FIN TABLA DE ARTICULOS PARA SELECCIONAR -->
+</ion-content>

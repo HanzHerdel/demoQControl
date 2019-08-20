@@ -1,0 +1,14 @@
+<div >
+  <form (ngSubmit)="onSubmit()" [formGroup]="form" >
+    <div class="flexBox">    
+      <div *ngFor="let campo of campos">
+        <div  class="{{campo.claseCss}}">
+          <app-campo-dinamico [campo]="campo" [form]="form"></app-campo-dinamico>
+        </div>
+      </div>
+    </div>
+    <div class="boton">   
+      <ion-button type="submit" color="secondary">{{botonLabel}}</ion-button>
+    </div>
+  </form>
+</div>

@@ -1,5 +1,7 @@
 {
   "name": "demoQcontrol",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }

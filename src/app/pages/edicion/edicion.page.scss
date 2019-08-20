@@ -1,0 +1,101 @@
+.editarDivHeader{
+  position: relative;
+  margin-left: auto;
+  padding-bottom: 1px;
+  margin: 15px;
+  border-radius: 5px;
+  background:var(--ion-color-primary);
+  padding: 4px;
+  font-size: large;
+  .editarHeader{
+    color: #ffffff;
+    padding: 5px 0px 2px;
+  }
+}
+.eliminarBtn{
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  margin: 7px 32%;
+  padding-bottom: 5px;
+}
+.articuloAEditar{
+  text-align: center;
+  border-radius: 0;
+  margin:0;
+  height: auto;
+}
+.edicionesContenido{
+  padding:5px 0 0 0;
+}
+/*******************EDICION ITEM***********************/
+ion-card-title{
+  padding: 5px;
+  border-radius: 5px;
+  text-align: center;
+  color: white;
+  font-size: large;
+  ion-icon{
+    top: 3px;
+    position: relative;
+    margin-right: 5px;
+  }
+}
+.buttonsContainer{
+  text-align: center;
+  padding-top: 10px;
+}
+
+.headerItem{
+  background:var(--ion-color-primary);
+
+}
+.headerProveedor{
+  background:var(--ion-color-secondary);
+}
+.headerMarca{
+  background:var(--ion-color-dark);
+}
+.headerCategoria{
+  background:var(--ion-color-light);
+}
+.itemEdicion{
+  --border-radius: 5px;
+  padding:10px;
+}
+/******************* FOOTER DE ULTIMOS EDITADOS *****************/
+.ultimosAgregados{
+  height:35px;
+  margin: 0;
+  //border-radius: 25px 25px 0 0;
+  transition:all .4s  ease-in-out;  
+  text-align: center;
+  cursor: pointer;
+  .etiquetaUltimosArticulos{
+    height: 20px;
+    margin-top: 5px;
+    color: white;
+    transition:all .4s .2s ease-in-out;  
+    font-size: large;
+  }
+}
+.ultimosAgregadosTabla::-webkit-scrollbar { width: 0 !important }
+.ultimosAgregadosTabla{  
+  overflow: -moz-scrollbars-none; 
+ -ms-overflow-style: none; 
+}
+.abierto{
+  transition:all .8s  ease-in-out;
+  height: 150px;
+  .etiquetaUltimosArticulos{
+    height: 0px;
+    margin-top: 0px;
+    transition:all .4s .4s ease-in-out;
+  }
+}
+
+.itemRecientes{
+  height: 20px;
+  font-size: 10px;
+}
+

@@ -1,0 +1,30 @@
+.buttonsContainer{
+    text-align: center;
+    padding-top: 10px;
+}
+
+.headerItem{
+    background:var(--ion-color-primary);
+
+}
+.headerProveedor{
+    background:var(--ion-color-secondary);
+}
+.headerMarca{
+    background:var(--ion-color-dark);
+}
+.headerCategoria{
+    background:var(--ion-color-light);
+}
+ion-card-title{
+    padding: 5px;
+    border-radius: 5px;
+    text-align: center;
+    color: white;
+    font-size: large;
+    ion-icon{
+      top: 3px;
+      position: relative;
+      margin-right: 5px;
+    }
+  }

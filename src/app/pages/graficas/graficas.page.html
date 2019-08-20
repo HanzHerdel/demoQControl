@@ -1,0 +1,190 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Desempeño</ion-title>
+    <div class="rangoAgrupacion"  *ngIf="tipoDeChart=='PieChart'" no-lines >
+        <label >
+          Agrupacion de Datos
+        </label>
+          <ion-range  min="1" max="25" debounce="400" color="primary" [(ngModel)]="valorRangoSensibilidad" (ionChange)="rangoSensibilidadPieChart()">
+        </ion-range>
+    </div>
+    <div class="rangoAgrupacion" *ngIf="opcionElegida=='Artículos Más Productivos'"  no-lines >
+      <label >
+        Limite de Artículos {{limiteDatos}}
+      </label>
+        <ion-range  min="10" max="25" debounce="400" color="primary" [(ngModel)]="limiteDatos" (ionChange)="limiteDatosColumnChart()">
+      </ion-range>
+   </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- SELECCION DE TIPO DE DATOS -->
+      <!-- SELECCION DE FECHAS -->
+    <div class="flexBox opcionesWrapper" *ngIf="opcionElegida=='Artículos Más Productivos' || 'Historial De Artículo'">				
+      <div class="campoFecha">
+        <ion-label class="visible" stacked>
+          Desde
+        </ion-label>		 	
+          <my-date-picker class="fixedPicker"  [options]="myDatePickerOptions"
+            (dateChanged)="dateInitChanged($event)" [ngModel]="datePicker1"></my-date-picker>
+      </div>
+      <div class="campoFecha">
+          <ion-label stacked class="visible">
+          Hasta
+        </ion-label>			 	
+          <my-date-picker [options]="myDatePickerOptions"
+            (dateChanged)="dateEndChanged($event)"  [ngModel]="datePicker2"></my-date-picker>
+      </div>
+      <ion-item class="tipoDeDatos">
+        <ion-label position="stacked">
+          Seleccione el tipo de datos
+        </ion-label>				
+        <ion-select (ionChange)="opcionSeleccionada()" [(ngModel)]="opcionElegida" okText="Seleccionar" cancelText="Cancelar">
+              <ion-select-option *ngFor="let opcion of opciones" value="{{opcion}}">{{opcion}}</ion-select-option>
+          </ion-select>
+      </ion-item>
+    </div>
+    <!-- FIN SELECCION DE FECHAS -->
+    <!-- HISTORIAL ARTICULO (implementar) -->
+      <div  *ngIf="opcionElegida=='Historial De Artículo'">
+          <ion-card class="tarjetas tarjetaBusqueda" style="background:var(--ion-color-light-tint)">
+              <!-- Busqueda De Articulos -->
+            <div class="divEtiquetaBusqueda" >        
+              <label><ion-icon name="search" ></ion-icon>Búsqueda De Artículos</label>
+            </div>
+            <ion-card-content  no-padding no-margin>
+                <div class="flexBoxBusqueda">
+                  <div class="divBarraBusqueda">      
+                    <ion-searchbar style="border-radius: 6px;"
+                      [(ngModel)]="busqueda"(ionCancel)="onCancel($event)" (ionChange)="search()" debounce="800"
+                      placeholder="Nombre Producto">
+                    </ion-searchbar>
+                  </div>
+                  <div class="divBarraBusqueda">        
+                    <ion-searchbar 
+                      [(ngModel)]="busquedaCodigo"  (ionCancel)="onCancel($event)" (ionChange)="searchCodigo($event)" debounce="1000"
+                      placeholder="Código Producto">
+                    </ion-searchbar>
+                  </div>
+                  <div class="divCampoBusqueda"> 
+                    <ion-item style="--border-radius: 6px;">
+                      <ion-label  position="stacked">
+                        Categoría
+                      </ion-label>
+                      <ion-select (ionChange)="search()" [(ngModel)]="tipoFiltro" interface="action-sheet"  >
+                          <ion-select-option mode="ios" selected="true" value="" ></ion-select-option>
+                          <ion-select-option *ngFor="let tipo of categorias"  value="{{tipo.nombre}}">{{tipo.nombre}}</ion-select-option>
+                      </ion-select>
+                    </ion-item>	
+                  </div>
+                  <div class="divCampoBusqueda"> 				
+                    <ion-item style="--border-radius: 6px;">
+                      <ion-label  position="stacked">
+                        Marca
+                      </ion-label>
+                      <ion-select mode="ios" (ionChange)="search()" [(ngModel)]="marcaFiltro" interface="action-sheet"  >
+                          <ion-select-option  selected="true" value=""></ion-select-option>
+                          <ion-select-option *ngFor="let marca of marcas"  value="{{marca.nombre}}">{{marca.nombre}}</ion-select-option>
+                      </ion-select>
+                    </ion-item>
+                  </div> 
+                  <div class="divCampoBusqueda"> 				
+                    <ion-item style="--border-radius: 6px;">
+                      <ion-label  position="stacked">
+                        Proveedor
+                      </ion-label>
+                      <ion-select mode="ios" (ionChange)="search()" [(ngModel)]="proveedorFiltro" interface="action-sheet">
+                        <ion-select-option  selected="true" value=""></ion-select-option>
+                        <ion-select-option *ngFor="let proveedor of proveedores"  value="{{proveedor.nombre}}">{{proveedor.nombre}}</ion-select-option>
+                      </ion-select>
+                    </ion-item>
+                  </div> 
+                </div>
+            </ion-card-content> 
+          </ion-card>
+            <!-- TABLA DE BUSQUEDA -->
+            <ion-card class="cardTablaResultados" *ngIf="existenArticulos()"  [@animacionTablaItems] >
+              <div class="tablaGridContainer" >
+                <div *ngFor="let cabecera of cabecerasBusqueda" class="cabeceraTabla" [ngClass]="cabecera.necesario ? '': 'bajar'" >
+                  {{cabecera.cabecera}}
+                </div>
+                <ng-container *ngFor="let articulo of articulos;let odd=odd;let i=index" class="filaTabla">
+                  <div class="filaTabla" id="{{articulo.id}}" (click)="selectItem(articulo, articulo.id)">        
+                    <div *ngFor="let cabecera of cabecerasBusqueda" class="itemFila odd{{odd}}" [ngClass]="cabecera.necesario ? '': 'bajar'">
+                      <ng-container *ngIf="cabecera.key=='precio'"  ><small>Q</small></ng-container>{{articulo[cabecera.key]}}
+                    </div>
+                    <div class="infoExtra"> 
+                        <ng-container  *ngFor="let cabecera of cabecerasBusqueda"  > 
+                          <ng-container *ngIf="cabecera.necesario==false"  >
+                          {{cabecera.cabecera | titlecase}}: {{articulo[cabecera.key]}} &nbsp;
+                          </ng-container>    
+                        </ng-container>  
+                    </div>
+                  </div>
+                </ng-container>
+              </div>
+          </ion-card>
+          <!-- FIN TABLA DE BUSQUEDA -->
+          <!-- BOTON AGREGAR AL GRAFICO -->
+          <div class="contendeorOps"  *ngIf="itemSelected" [@animacionNgIf] >
+              <div class="agregarAlGrafico"  (click)="busquedaHistorial()">
+                <div style="flex:5;">
+                    <label class="agregarAlGraficoBtn">{{leyendaBotonHistorial()}}</label>
+                </div>          
+                <div >
+                  <ion-icon class="iconosAddRemove" name="add-circle-outline"></ion-icon>
+                </div>
+            </div>
+            <div class="limpiarGrafica" *ngIf="datosChartUno.length>0" (click)="limpiarHistorial()" [@animacionLimpiarGph]> 
+                  Limpiar Grafica         
+              </div>
+          </div>
+
+
+          <!-- FIN BOTON AGREGAR AL GRAFICO -->
+      </div>
+      <!-- TABLA DE BUSQUEDA -->
+      <!-- GRAFICOS -->
+      <div *ngIf="opcionElegida !='Sin Movimiento'" style="margin: 20px" class="chart_wrap"  (window:resize)="actualizarGraficos($event)"  >
+         <label class="sinDatosLabel" *ngIf="!existenDatos(datosChartUno)">No existen datos</label> 
+         <google-chart (chartError)='error($event)' *ngIf="existenDatos(datosChartUno)" class="piechart" [data]="chartUno"></google-chart>
+       </div>
+      <div *ngIf="opcionElegida !='Historial De Artículo'&& opcionElegida !='Sin Movimiento'" style="margin: 20px" class="chart_wrap"  >
+        <label class="sinDatosLabel" *ngIf="!existenDatos(datosChartDos)">No existen datos</label>
+         <google-chart (chartError)='error($event)' *ngIf="existenDatos(datosChartUno)"  class="piechart" [data]="chartDos"></google-chart>
+       </div>
+
+      <!-- TABLA HISTORIAL DE VENTAS-->
+      <div *ngIf="opcionElegida =='Artículos Más Productivos'||opcionElegida =='Sin Movimiento'" [@genericaNgif]>
+        <h3 class="tituloTabla">{{tituloTabla}}</h3>
+        <div class="tablaGridContainer" style="max-height: 70vh; margin: 0px 2%;" >        
+          <div *ngFor="let cabecera of cabecerasTablaHistorial" class="cabeceraTabla" [ngClass]="cabecera.necesario ? '': 'bajar'" >
+            {{cabecera.cabecera}}
+            </div>
+            <ng-container *ngFor="let articulo of arrayDeArticulos;let odd=odd;let i=index" class="filaTabla">
+              <div class="filaTabla" id="fila{{i}}" (click)="selectItem(articulo, 'fila',i)">        
+                <div *ngFor="let cabecera of cabecerasTablaHistorial" class="itemFila odd{{odd}}" [ngClass]="cabecera.necesario ? '': 'bajar'">
+                  <ng-container *ngIf="cabecera.key=='precio'"  ><small>Q</small></ng-container>{{articulo[cabecera.key]}}
+                </div>
+                <div class="infoExtra"> 
+                  <ng-container  *ngFor="let cabecera of cabecerasTablaHistorial"  > 
+                    <ng-container *ngIf="cabecera.necesario==false"  >
+                    {{cabecera.cabecera | titlecase}}: {{articulo[cabecera.key]}} &nbsp;
+                    </ng-container>    
+                  </ng-container>  
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      <!-- FIN TABLA HISTORIAL DE VENTAS  -->
+</ion-content>
+<ion-footer *ngIf="opcionElegida =='Todas Las Ventas'"  [@genericaNgif]>
+  <div class="todasLasVentasFooter">
+    {{todasLasVentasLabelFooter}}
+  </div>
+</ion-footer>

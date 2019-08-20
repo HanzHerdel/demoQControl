@@ -1,6 +1,400 @@
-// App Styles
-// ----------------------------------------------------------------------------
-// Put style rules here that you want to apply to the entire application. These 
-// styles are for the entire app and not just one component. Additionally, this 
 // file can hold Sass mixins, functions, and placeholder classes to be imported 
 // and used throughout the application.
+ion-toolbar{
+  --background: var(--toolbar);
+  --color: #e6f0ff;
+}
+ion-content{
+  /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#383659+0,262626+98 */
+ --background:var(--backgroundGeneral);
+}
+/***********************  ESTILO MENU **********************/
+ion-menu{
+  --max-width	:250px;
+  --min-width:250px;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+.menu{
+  --background: #262f3d;  
+  .itemMenu{
+    --background: #262f3d;
+    color: white;
+    transition:--background .4s ease-in-out;
+    .icono{
+        color:white
+      }  
+  }
+}
+.itemMenu:hover{
+  --background: rgba(255,255,255,.08)!important;
+  transition:--background .4s ease-in-out;
+  text-decoration: underline;
+  .ventas{
+    color:var(--ion-color-primary);
+  }
+  .agregar{
+    color:var(--ion-color-secondary-tint);
+  }
+  .editar{
+    color:var(--ion-color-amarillo-tint);
+  }
+  .reportes{
+    color:var(--ion-color-light-tint);
+  }
+  .graficas{
+    color:var(--ion-color-warning);
+  }
+  .inventario{
+    color:var( --ion-color-success-tint);
+  }
+}
+.footerLogo{
+  background: #262f3d;
+  text-align: center;
+  padding-bottom:5px;
+  .logo{
+    max-width: 75%;
+    border: 0;
+    padding: 6px 20px;
+  }
+  .info{
+    .iconos{
+      max-width: 12px;
+      display: inline-block;
+      border: 0;
+      vertical-align: middle;
+    }
+    p{    
+      display: inline-block;
+      color: white;
+      font-size: x-small;
+      margin: 0px 0px 0px 0px;
+      padding:0 8px 5px;
+      -webkit-user-select: all;  /* Chrome all / Safari all */
+      -moz-user-select: all;     /* Firefox all */
+      -ms-user-select: all;      /* IE 10+ */
+      user-select: all;
+    }
+  }
+}
+
+.split-pane-visible >.split-pane-side {
+  min-width: 250px!important;
+  max-width: 250px!important;
+}
+
+/*********************** FIN ESTILO MENU **********************/
+/*ESTILOS COMUN VENTAS E INVENTARIO*/
+
+/*  BUSQUEDA Y RESULTADOS */
+.divEtiquetaBusqueda{
+  background-color:  var(--ion-color-medium-shade);    
+  text-align: left;
+  padding: 5px;
+  text-align: center;
+  label{
+    color: white;
+    padding: 10px;
+    margin-left: -5px;
+  }
+  ion-icon{
+    position: relative;
+    padding-right: 2px;
+    top: 2px;
+  }
+}
+/*********************** TARJETAS DEPLEGABLES ****************************/
+.tarjetaBusqueda{
+  max-width: 750px;
+}
+  /******* tabla con css grid *********/
+h4 {
+  text-align: right;
+  color: white;
+  margin: 2px 9px;
+  font-size: 16px;
+}
+/*.tarjetas{
+    //la transicion debe epecificarse en la clase que las propiedades van a cambiar
+    //en este caso el cambio sera de colapsado (width: 300px;max-height:38px;) a 
+    //tarjetas (width:98%; max-height: 1000px;) para lo cual retrasaremos el cambio de altura .2s
+    transition: max-height 1.5s .2s ease-in-out, 
+                width .5s ease-in-out; 
+    //transition-delay: max-height 1s;
+    width:98%; 
+    max-height: 500px;  
+    max-width: 750px;
+    //transition: max-height .5s ease-in-out;
+    //transition-delay: height 1s;
+    background:var(--ion-color-primary-tint);  
+    margin: 0 auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.colapsado{
+    //la transicion aplica a la clase a la que va a cambiar, es decir cuando se agrega la clase colapsado 
+    //este orden es el que 
+    transition: max-height .5s ease-in-out , width .9s .2s ease-in;  
+    width: 300px;
+    max-height:38px;
+}*/
+
+.tarjetas {
+  transition: opacity .6s .3s ease-in-out;
+  width: 98%;
+  //height: fit-content;
+  max-height: 2000px;
+  max-width: 750px;
+  background: var(--ion-color-primary-tint);
+  margin: 0 auto;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  opacity: 1;
+  position: absolute;
+  right: 0;
+  left: 0;
+}
+.colapsado {
+  transition: opacity .4s ease-in-out,max-height 0s .4s ;
+  /* width: 300px; */
+  opacity: 0;
+  max-height: 0px;
+}
+.headerTarjeta{
+    font-size: 13px;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 11px;
+    background:var(--ion-color-primary);// #32999e;
+    color: white;
+    border-radius: 5px;
+    box-shadow: 2px 2px 3px 0px #888888;
+    cursor: pointer;
+}
+.consejos{
+    margin: 0 25px 25px;
+    border-radius: 5px;
+    margin-top: -20px;
+}
+
+.tituloConcejo{
+    background: #ffed1a;
+    width: -webkit-fit-content;
+    width: -moz-fit-content;
+    width: fit-content;
+    border-radius: 15px 15px 0 0;
+    padding: 5px 5px 0 5px;
+    color: black;
+    font-style: italic;
+    margin-bottom: 0;
+}
+.leyendaConcejo{
+    background: #ffff83;
+    border: 8px solid #ffed1a;
+    padding: 10px;
+    color: black;
+    font-style: italic;
+    border-radius: 0 15px 15px 15px;
+}
+/*********************** FIN TARJETAS DEPLEGABLES ****************************/
+  /*********** ESTILOS CAMPOS DE BUSQUEDA GENERALES *****/
+  .divCampoBusqueda{
+    padding: 6px 8px;
+    min-width: 200px;
+    width: 33%;
+    flex-grow: 1;
+}
+.divBarraBusqueda{
+    padding:4px 8px 0px !important;
+    min-width: 200px;
+    width: 49%;
+    flex-grow: 1;
+}
+  /******* TABLAS CON CSS GRID *********/
+  :root{
+    --colNum:7;
+    --columnasCarrito:8;
+   }
+  .tablaGridContainer {
+    display: grid;
+    grid-template-columns: repeat(var(--colNum), auto);
+    //grid-template-columns: auto auto auto auto;
+    grid-gap: 0px;
+    background-color: white;
+    padding: 3px;
+    //border: 1px solid gray;
+    background: var(--ion-color-tertiary);
+    max-height: 20vh;
+    overflow-y: auto;
+  }
+
+  .cabeceraTabla {
+    background-color: var(--ion-color-tertiary);
+    text-align: center;
+    padding: 4px 2px;
+    font-weight: 400;
+    color: white;
+    
+  }
+  .filaTabla, .filaTablaCarrito {
+    display: contents;
+  }
+  .filaTabla:hover div{
+    background-color:#b9e8ff ;
+  }
+  .filaTablaCarrito:hover div{
+    background-color:var(--carritoSelect) !important;
+  }
+  .selected div{
+    background: #8fdbff !important;
+  }
+  .itemFila{
+    height: 25px;    
+    color: var(--letras);
+    padding: 5px;
+    transition:height .4s  ease-in-out;
+    text-overflow: clip;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  
+  .oddtrue{    
+    background-color:#d3e2f1;
+
+  }
+  .oddfalse{    
+    background-color:white;
+  }
+  .cardTabla{
+    padding-bottom: 5px;
+    background: var(--ion-color-tertiary);
+  }
+    /************* informacion extra desplegable***********/
+    .infoExtra{      
+        background-color:#b9e8ff;
+        display:none;
+        height: 0px;        
+        text-align: center;
+        overflow: hidden;
+        grid-column-start: 1;
+        grid-column-end: 6;
+        text-align: center;
+        padding-top: 5px;
+    }
+    .infoExtraCarrito{ 
+      background-color:var(--carritoSelect);     
+      display:none;
+      height: 0px;        
+      text-align: center;
+      overflow: hidden;
+      grid-column-start: 1;
+      grid-column-end: 7;
+      text-align: center;
+      padding-top: 5px;
+    }
+  /******* fin tabla con css grid *********/
+/****************** campos input ************************/
+.flexBox >div{
+    padding: 8px;
+}
+.flexBoxBusqueda{  
+	display: flex;
+  flex-wrap:wrap;
+  div{
+  padding:5px 15px 12px 15px;}
+}
+.campoTexto{
+    min-width:120px;
+    max-width: 250px;
+}
+.campoTextoExtendido{
+    min-width:350px;
+    max-width: 400px;
+}
+.campoSelec{
+    max-width:240px;
+    min-width: 180px;
+    padding-top:-6px;
+    margin: -2px;
+}
+.campoNum{
+    min-width:120px;
+    max-width: 125px;
+}
+.campoNumLimite{
+    min-width:150px;
+    max-width: 180px;
+}
+.errMensajeInput{    
+    text-align: center;
+    font-size: 85%;
+}
+.errorLabel{
+    font-size: 80%;
+    text-align: center;
+    padding-top: 2px;
+    color:var(--ion-color-danger-shade);
+}
+/****************** fin campos input ************************/
+/********** MODIFICACION DE SELECTOR DE CAMPO SELECT EN INTERFAZ ACTION SHEET***************/
+.action-sheet-container.sc-ion-action-sheet-md{
+    max-height: 95%;
+    margin-top: 4%;
+}
+/********** MODIFICACION DE SELECTOR DE CAMPO SELECT EN INTERFAZ ACTION SHEET***************/
+.mydp .alignselectorright {
+  right: -20px !important;
+}
+.tituloContent{
+  text-align: right;
+  margin: 0 30px;
+  border-bottom: 4px solid gray;
+}
+.flexBox{
+	display: flex;
+	flex-wrap:wrap;
+}
+@media (max-width: 620px) {
+    .filaTabla:hover > .infoExtra{
+        display: block;
+        max-height: 80px;
+        transition:all .5s .4s ease-in-out;
+        padding: 10px;
+        margin-bottom: 2px;
+      }
+      .filaTablaCarrito:hover > .infoExtraCarrito{
+          display: block;
+          max-height: 80px;
+          transition:all .5s .4s ease-in-out;  
+          padding: 10px;
+          margin-bottom: 2px;
+        }
+      .infoExtraCarrito{
+        display:block;
+        max-height: 0px;
+        transition:all .5s  ease-in-out;
+        height: fit-content;
+        margin-bottom:0;
+        padding:0;   
+        color:var(--letras); 
+      }
+      .infoExtra{
+        color:var(--letras);          
+        margin-bottom:0; 
+        padding: 0px;     
+        display:block;
+        max-height: 0px;
+        transition:all .5s  ease-in-out;
+        height: fit-content;
+      }
+      .bajar{
+        display: none;
+      }
+      :root{
+        --colNum:5;
+        --columnasCarrito:6;
+      }
+  
+    }

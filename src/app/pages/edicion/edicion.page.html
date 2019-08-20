@@ -1,0 +1,218 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      Editar Elementos Del Sistema
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [@animacionPagina]>
+  <div class="buttonsContainer">
+      <ion-button color="primary" (click)="switch('editarItemCard')" >
+        <ion-icon slot="start" name="egg"></ion-icon>Artículos
+      </ion-button>
+      <ion-button color="secondary" (click)="switch('editarProveedorCard')"  >
+        <ion-icon slot="start" name="contact"></ion-icon>Proveedores
+      </ion-button>
+      <ion-button color="dark" (click)="switch('editarMarcaCard')"  >
+        <ion-icon slot="start" name="star"></ion-icon>Marcas
+      </ion-button>
+      <ion-button color="light" (click)="switch('editarCategoriaCard')"  >
+        <ion-icon slot="start" name="apps"></ion-icon>Categorías
+      </ion-button>    
+    </div>
+  <!-- EDICION DE ARTICULOS -->
+  <ion-card id="editarItemCard" class="tarjetas colapsado tarjetaBusqueda" >
+    <ion-card-header >        
+      <ion-card-title class="headerItem"><ion-icon name="search"></ion-icon>Buscar Artículo</ion-card-title>
+    </ion-card-header>
+      <ion-card-content  no-padding no-margin>
+        <div class="flexBoxBusqueda">
+          <div class="divBarraBusqueda">      
+            <ion-searchbar style="border-radius: 6px;"
+              [(ngModel)]="busqueda"(ionCancel)="onCancel($event)" (ionChange)="search()" debounce="800"
+              placeholder="Nombre Producto">
+            </ion-searchbar>
+          </div>
+          <div class="divBarraBusqueda">        
+            <ion-searchbar 
+              [(ngModel)]="busquedaCodigo"  (ionCancel)="onCancel($event)" (ionChange)="searchCodigo($event)" debounce="800"
+              placeholder="Código Producto">
+            </ion-searchbar>
+          </div>
+          <div class="divCampoBusqueda"> 
+            <ion-item style="--border-radius: 6px;">
+              <ion-label  position="stacked">
+                Categoría
+              </ion-label>
+              <ion-select (ionChange)="search()" [(ngModel)]="tipoFiltro" interface="popover"  >
+                  <ion-select-option selected="true" value="" ></ion-select-option>
+                    <ion-select-option *ngFor="let tipo of categorias"  value="{{tipo.nombre}}">{{tipo.nombre}}</ion-select-option>
+              </ion-select>
+            </ion-item>	
+          </div>
+          <div class="divCampoBusqueda"> 				
+            <ion-item style="--border-radius: 6px;">
+              <ion-label  position="stacked">
+                Marca
+              </ion-label>
+                  <ion-select  (ionChange)="search()" [(ngModel)]="marcaFiltro" interface="popover"  >
+                  <ion-select-option  selected="true" value=""></ion-select-option>
+                  <ion-select-option *ngFor="let marca of marcas"  value="{{marca.nombre}}">{{marca.nombre}}</ion-select-option>
+                </ion-select>
+              </ion-item>
+          </div> 
+          <div class="divCampoBusqueda"> 				
+              <ion-item style="--border-radius: 6px;">
+                <ion-label  position="stacked">
+                  Proveedor
+                </ion-label>
+                    <ion-select (ionChange)="search()" [(ngModel)]="proveedorFiltro" interface="popover">
+                    <ion-select-option  selected="true" value=""></ion-select-option>
+                    <ion-select-option *ngFor="let proveedor of proveedores"  value="{{proveedor.nombre}}">{{proveedor.nombre}}</ion-select-option>
+                  </ion-select>
+                </ion-item>
+            </div> 
+        </div>
+      </ion-card-content>       
+    <ion-card class="cardTabla">
+    <!--    -->
+      <div class="tablaGridContainer" >
+        <div *ngFor="let cabecera of cabeceras" class="cabeceraTabla" [ngClass]="cabecera.necesario ? '': 'bajar'" >
+          {{cabecera.cabecera}}
+        </div>
+        <ng-container *ngFor="let articulo of articulos;let odd=odd;let i=index" class="filaTabla">
+          <div class="filaTabla" id="fila{{i}}" (click)="selectItem(articulo, i)">        
+            <div *ngFor="let cabecera of cabeceras" class="itemFila odd{{odd}}" [ngClass]="cabecera.necesario ? '': 'bajar'">
+              <ng-container *ngIf="cabecera.key=='precio'"  >Q.</ng-container> {{articulo[cabecera.key]}}
+            </div>
+            <div class="infoExtra"> 
+                <ng-container  *ngFor="let cabecera of cabeceras"  > 
+                  <ng-container *ngIf="cabecera.necesario==false"  >
+                  {{cabecera.cabecera | titlecase}}: {{articulo[cabecera.key]}} &nbsp;
+                  </ng-container>    
+                </ng-container>  
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </ion-card>
+    <!--  edicion de articulo  -->
+    <div *ngIf="itemSelected" [@animacionItem]  class="comprimido articuloAEditar"  >
+      <div class="editarDivHeader">
+          <div class="editarHeader">
+              Artículo A Editar
+          </div>
+      </div>
+      <ng-container >
+          <app-form-dinamico  #formItem [campos]="camposFormEditarItem" [botonLabel]="'Editar'" (emitirDatos)=datosItemEmitidos($event) ></app-form-dinamico> 
+        <ion-button color="danger" (click)="preguntarEliminarItem()" class="eliminarBtn">Eliminar</ion-button>
+      </ng-container>       
+    </div>
+  </ion-card>
+  <!-- FIN EDICION DE ARTICULOS -->
+  <!-- EDICION DE MARCAS -->
+  <ion-card id="editarMarcaCard" class="tarjetas colapsado"  >
+      <ion-card-header >
+          <ion-card-title class="headerMarca"><ion-icon name="create"></ion-icon>Editar Marca</ion-card-title>
+      </ion-card-header>
+    <ion-card-content class="edicionesContenido">    
+      <ion-item class="itemEdicion">
+        <ion-label position="stacked">
+          Seleccione la Marca
+        </ion-label>
+        <ion-select  (ionChange)="marcaAEditarSeleccionada($event.target.value)" placeholder="Seleccione Una Marca" class="seleccionEdicion"  interface="action-sheet" okText="Aceptar" cancelText="Cancelar">
+            <ng-container *ngFor="let opcion of marcasEditar; let i =index">
+                <ion-select-option  [value]="opcion">{{opcion.nombre}}</ion-select-option>
+            </ng-container>
+        </ion-select>
+      </ion-item>
+      <!-- editar marca -->
+      <ng-container *ngIf="marcaAEditar!=null" >
+        <div class="editarDivHeader">
+          <div class="editarHeader">
+              MARCA A EDITAR:
+          </div>
+        </div>
+        <app-form-dinamico  #formMarcas [campos]="camposFormMarcas" [botonLabel]="'EDITAR'" (emitirDatos)=datosMarcaEmitidos($event) ></app-form-dinamico> 
+        <ion-button color="danger" (click)="preguntarEliminarMarca()" class="eliminarBtn">Eliminar</ion-button>
+      </ng-container>
+    </ion-card-content>
+  </ion-card>
+  <!-- FIN EDICION DE MARCAS -->
+  <!-- EDICION DE CATEGORIA -->
+  <ion-card id="editarCategoriaCard" class="tarjetas colapsado"  >
+    <ion-card-header >
+        <ion-card-title class="headerCategoria"><ion-icon name="create"></ion-icon>Editar Categoría</ion-card-title>
+    </ion-card-header>
+    <ion-card-content  class="edicionesContenido">    
+      <ion-item class="itemEdicion">
+        <ion-label position="stacked">
+          Seleccione la Categoría:
+        </ion-label>
+        <ion-select  (ionChange)="categoriaAEditarSeleccionada($event.target.value)" placeholder="Seleccione Una Categoria" class="seleccionEdicion"  interface="action-sheet" okText="Aceptar" cancelText="Cancelar">
+            <ng-container *ngFor="let opcion of categoriasEditar; let i =index">
+                <ion-select-option  [value]="opcion">{{opcion.nombre}}</ion-select-option>
+            </ng-container>
+        </ion-select>
+      </ion-item>
+      <!-- editar categoria -->
+      <ng-container *ngIf="categoriaAEditar!=null" >
+        <app-form-dinamico  #formTipo [campos]="camposFormTipos" [botonLabel]="'EDITAR'" (emitirDatos)=datosCategoriaEmitidos($event) ></app-form-dinamico> 
+        <ion-button color="danger" (click)="preguntarEliminarCategoria()" class="eliminarBtn">Eliminar</ion-button>
+      </ng-container>
+    </ion-card-content>
+  </ion-card>
+  <!-- FIN EDICION DE CATEGORIA -->
+  <!-- EDICION DE PROVEEDOR -->
+  <ion-card id="editarProveedorCard" class="tarjetas colapsado"  >
+    <ion-card-header  >
+        <ion-card-title class="headerProveedor"><ion-icon name="create"></ion-icon>Editar Proveedor</ion-card-title>
+    </ion-card-header>
+    <ion-card-content class="edicionesContenido">    
+      <ion-item class="itemEdicion">
+        <ion-label position="stacked">
+          Seleccione el Proveedor
+        </ion-label>
+        <ion-select  (ionChange)="proveedorAEditarSellecionado($event.target.value)" placeholder="Seleccione Un Proveedor" class="seleccionEdicion"  interface="action-sheet" okText="Aceptar" cancelText="Cancelar">
+            <ng-container *ngFor="let opcion of proveedoresEditar; let i =index">
+                <ion-select-option  [value]="opcion">{{opcion.nombre}}</ion-select-option>
+            </ng-container>
+        </ion-select>
+      </ion-item>
+      <!-- editar proveedor -->
+      <ng-container *ngIf="proveedorAEditar!=null" >
+        <app-form-dinamico  #formProveedor [campos]="camposFormProveedor" [botonLabel]="'EDITAR'" (emitirDatos)=datosProveedorEmitidos($event) ></app-form-dinamico> 
+        <ion-button color="danger" (click)="preguntarEliminarProveedor()" class="eliminarBtn">Eliminar</ion-button>
+      </ng-container>
+    </ion-card-content>
+  </ion-card>
+  <!-- FIN EDICION DE PROVEEDOR -->
+</ion-content>
+<ion-footer  >
+  <ion-card id="ultimosAgregados" color="tertiary" class="ultimosAgregados" (click)="switchFooter()" >
+    <div class="etiquetaUltimosArticulos">Ultimos Articulos Editados</div>
+    <div class="tablaGridContainer ultimosAgregadosTabla" >
+      <div *ngFor="let cabecera of cabeceras" class="cabeceraTabla" [ngClass]="cabecera.necesario ? '': 'bajar'" >
+        {{cabecera.cabecera}}
+      </div>
+      <ng-container *ngFor="let articulo of ultimosItemsModificados;let odd=odd;let i=index" >
+        <div class="filaTabla" id="fila{{i}}" >        
+          <div *ngFor="let cabecera of cabeceras" class="itemFila itemRecientes odd{{odd}}" [ngClass]="cabecera.necesario ? '': 'bajar'">
+            <ng-container *ngIf="cabecera.key=='precio'"  >Q.</ng-container> {{articulo[cabecera.key]}}
+          </div>
+          <div class="infoExtra"> 
+              <ng-container  *ngFor="let cabecera of cabeceras"  > 
+                <ng-container *ngIf="cabecera.necesario==false"  >
+                 {{cabecera.cabecera | titlecase}}: {{articulo[cabecera.key]}} &nbsp;
+                </ng-container>    
+              </ng-container>  
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </ion-card>
+</ion-footer>

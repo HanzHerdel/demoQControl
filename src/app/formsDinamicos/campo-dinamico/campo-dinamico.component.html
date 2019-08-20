@@ -1,0 +1,29 @@
+<div [formGroup]="form">
+  <ion-item style="--border-radius: 6px;">
+    <ion-label position="{{campo.posicionEtiqueta}}" [attr.for]="campo.nombreCampo">{{campo.etiqueta}}</ion-label>
+
+    <div [ngSwitch]="campo.tipoDeCampo" style="width: 95%">
+      <!-- campo de texto-->
+      <div *ngSwitchCase="'textbox'" >
+          <ion-input *ngIf="campo.tipoDeDato=='text'" [required]="campo.requerido" [minlength]="campo.minCaracteres"
+          [maxlength]="campo.maxCaracteres" [formControlName]="campo.nombreCampo"
+               [id]="campo.nombreCampo" [type]="campo.tipoDeDato" [placeholder]="campo.placeholder" [value]="campo.valor">
+          </ion-input>
+          <ion-input *ngIf="campo.tipoDeDato=='number' || campo.tipoDeDato=='email'" [required]="campo.requerido" min="0" [formControlName]="campo.nombreCampo"
+               [id]="campo.nombreCampo" [type]="campo.tipoDeDato" [value]="campo.valor" [placeholder]="campo.placeholder" [step]="campo.steps">
+          </ion-input>
+      </div>
+
+      <!--  campo select -->
+      <ion-select *ngSwitchCase="'select'" [id]="campo.nombreCampo" [placeholder]="campo.placeholder" 
+      [class]="campo.claseCss" [formControlName]="campo.nombreCampo" [interface]="campo.selectInterfaz" 
+      okText="Aceptar" cancelText="Cancelar">
+        <ng-container *ngFor="let opcion of campo.opciones; let i =index">
+            <ion-select-option [selected]="(opcion===campo.valor)" [value]="opcion">{{opcion}}</ion-select-option>
+        </ng-container>
+      </ion-select>
+    </div> 
+  </ion-item >
+  <div class="errorMessage" class="errorLabel" *ngIf="formInvalido">{{errorLabel}}</div>
+  
+</div>

@@ -1,0 +1,37 @@
+.tablaGridContainer {
+    max-height:80vh;
+}
+.opsWrapper{
+    width: auto;
+    padding: 3px;
+    display: flex;
+    position: static;
+    top: 0px;
+    right: 0;
+    .ops{
+        flex-grow:1;
+        min-width: 75px;
+        width: auto;
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        label{
+            top: 1px;
+            display: block;
+            position: relative;
+            right: 10px;
+            font-size: 90%;
+            white-space: nowrap;        
+        }
+        ion-toggle{
+            --background: var(--backgroundGeneralliceblue);
+        }
+    }
+}
+.cardConfiguracionTitulo{
+    text-align: center;
+    padding: 10px 0px 0px;
+    ion-icon{
+        margin:-1px 4px;
+    }
+}

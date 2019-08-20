@@ -1,0 +1,180 @@
+.fechaYOpsWrapper{
+    display: flex;
+    width: 100%;
+    padding: 10px;
+    margin: 10px 15px 20px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    .fecha{
+        min-width: 150px;
+        width: 33%;
+        flex-grow: 1;
+        max-width: 250px;
+    }
+
+}
+.opsWrapper{
+    width: auto;
+    padding: 5px;
+    display: flex;
+    position: absolute;
+    top: 5px;
+    right: 0;
+    .ops{
+        min-width: 50px;
+        width: auto;
+        align-items: center;
+        display: flex;
+        label{
+            top: 1px;
+            display: block;
+            position: fixed;
+            font-size: 90%;
+        }
+        ion-toggle{
+            margin:0 7px;
+        }
+    }
+}
+
+.metaData{
+    margin: 5px;
+    color: #608096;
+    border-bottom: 1px solid;
+    width: 90%;
+    text-indent: 5px;
+}
+.ventaWrapper{
+    max-width: 800px;
+    width: 80%;
+    display: flex;
+    margin: 0 auto;
+    height: auto;
+    text-align: center;
+    box-shadow: 2px 2px 2px 0px grey;
+    margin-bottom: 24px;
+    border-bottom: 5px solid var(--ion-color-light-shade);
+
+    .datosVenta{
+        display: inline-block;
+        flex: 10;        
+        background:#dce8ff;//var(--ion-color-primary-tint);
+        height: inherit;
+        border-radius:20px 0 0 0;
+        text-align: left;
+        padding-top: 10px;
+        .itemsEnVenta{
+            border-bottom: 1px solid #fff;
+            text-indent: 10px;
+            margin: 5px;
+            padding: 0 10px;
+            transition: all .4s .2s ease;
+            //color:var(--ion-color-success-shade);
+            .datosItem{
+                color: var(--toolbar);
+                flex: 4;
+                text-overflow: clip;
+                white-space: normal;
+                overflow: hidden;
+                transition: all .4s .2s ease;
+            }
+            .datosExtra{
+                max-height: 0px;
+                margin: 0px;
+                padding:0px;
+                overflow: hidden;                
+                color: white;                
+                display: block;                
+                text-align: center;   
+                transition: all .4s .2s ease;
+            }
+            .datosObligados{
+                width: 100%;
+                min-width: 100%;
+                display: flex;
+            }
+         
+        }
+
+        .itemsEnVenta:hover{
+            transition: all .4s .3s ease;
+            background: var(--toolbar);
+            .datosItem{
+                transition: all .4s .3s ease;
+                color: #ffffff;}
+            border-radius: 3px;
+            .datosExtra{
+                transition: all .4s .3s ease;            
+                padding: 10px;
+                max-height: 80px;
+            }
+            .totalItem{
+                transition: all .4s .3s ease;
+                color:#ffffff;//var(--ion-color-success-shade);
+            }  
+        }
+    .clienteVenta{
+        color:var(--nombresReportes);
+    }
+    .totalVenta{
+        float: right;
+        font-size: larger;
+        color:var(--dineroReportes);
+
+    }
+        .totalItem{
+            transition: all .4s .2s ease;
+            float:right;
+            color:var(--dineroReportes);//var(--ion-color-success-shade);
+        }
+    }
+    .bordeEliminar{
+        display: inline-block;
+        width: 10%;
+        max-width: 50px;
+        //min-width: 30px;
+        text-overflow: clip;
+        white-space: nowrap;
+        background:var(--ion-color-light-shade);
+        height: inherit;
+        cursor: pointer;
+        ion-icon{
+            position: relative;
+            top: calc(50% - 20px);
+            color: white;
+            width: 30px;
+            height: 40px;
+        }
+        :active{
+            background: #fff;
+            opacity: .7;
+        }
+    }
+    .bordeEliminar:hover{
+        ion-icon{
+            color:var(--ion-color-danger);
+            width: 36px;
+        } 
+    }
+
+
+}
+        
+.footerDeTotales{
+    height: auto;
+    padding: 7px;
+    /*transition: all .4s .6s ease-in-out;
+    -moz-transition: all .4s .6s ease-in-out;
+    -o-transition:all .4s .6s ease-in-out;
+    -webkit-transition:all .4s .6s ease-in-out;
+    opacity: 1;*/
+    font-size: large;
+    text-align: center;
+    background: var(--ion-color-light-shade);
+    cursor: pointer;
+      color:white;
+    label{
+        margin: 0 5px;
+    }
+}

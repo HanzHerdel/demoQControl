@@ -1,0 +1,89 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      Agregar datos al sistema
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [@animacionPagina]>
+  <div class="buttonsContainer">
+    <ion-button color="primary" (click)="switch('agregarItemCard')" >
+      <ion-icon slot="start" name="egg"></ion-icon>Artículos
+    </ion-button>
+    <ion-button color="secondary" (click)="switch('agregarProveedorCard')"  >
+      <ion-icon slot="start" name="contact"></ion-icon>Proveedores
+    </ion-button>
+    <ion-button color="dark" (click)="switch('agregarMarcasCard')"  >
+      <ion-icon slot="start" name="star"></ion-icon>Marcas
+    </ion-button>
+    <ion-button color="light" (click)="switch('agregarTiposCard')"  >
+      <ion-icon slot="start" name="apps"></ion-icon>Categorías
+    </ion-button>    
+  </div>
+  <div class="cardsContainer">
+  <ion-card id="agregarItemCard" class="tarjetas colapsado" >
+    <ion-card-header>
+      <ion-card-title class="headerItem"><ion-icon name="add-circle-outline"></ion-icon>Agregar Articulo</ion-card-title>
+    </ion-card-header>
+    <ion-card-content  >
+        <app-form-dinamico #formItem [campos]="camposFormItem" [botonLabel]="'Agregar'" (emitirDatos)=datosItemEmitidos($event) ></app-form-dinamico> 
+    </ion-card-content>
+    <div class="consejos">
+      <h3 class="tituloConcejo">Consejo:</h3>
+      <div class="leyendaConcejo">
+              Más datos por artículo es igual a mejores maneras de filtrar, mejor 
+              análisis de tus ventas y ganancias. Por ejemplo puedes agregar límite de unidades a 
+              un artículo para realizar pedidos de manera más ágil a tus proveedores teniendo la 
+              información de lo que tu negocio necesita!
+      </div>
+    </div>
+  </ion-card>
+  <ion-card id="agregarProveedorCard" class="tarjetas colapsado" >
+    <ion-card-header>
+        <ion-card-title class="headerProveedor"><ion-icon name="add-circle-outline"></ion-icon>Agregar Proveedor</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+        <app-form-dinamico  #formProveedor [campos]="camposFormProveedor" [botonLabel]="'Agregar'" (emitirDatos)=datosProveedorEmitidos($event) ></app-form-dinamico> 
+    </ion-card-content>
+    <div class="consejos">
+      <h3 class="tituloConcejo">Consejo:</h3>
+      <div class="leyendaConcejo">
+             Agregar un proveedor y un límite de unidades a tus artículos te permitirá realizar pedidos de manera
+             automática cuando necesites de sus productos, filtrando artículos de este proveedor que estén sobre el límite.
+      </div>
+    </div>
+  </ion-card> 
+  <ion-card id="agregarMarcasCard" class="tarjetas colapsado" >
+    <ion-card-header>
+        <ion-card-title class="headerMarca"><ion-icon name="add-circle-outline"></ion-icon>Agregar Marca</ion-card-title>
+    </ion-card-header>
+    <ion-card-content >
+        <app-form-dinamico  #formMarcas [campos]="camposFormMarcas" [botonLabel]="'Agregar'" (emitirDatos)=datosMarcaEmitidos($event) ></app-form-dinamico> 
+    </ion-card-content>
+    <div class="consejos">
+      <h3 class="tituloConcejo">Consejo:</h3>
+      <div class="leyendaConcejo">
+             Agregar marcas estandarizadas mejorara al orden y búsqueda de tus productos.
+      </div>
+    </div>
+  </ion-card> 
+  <ion-card id="agregarTiposCard" class="tarjetas colapsado" >
+    <ion-card-header>
+      <ion-card-title class="headerCategoria"><ion-icon name="add-circle-outline"></ion-icon>Agregar Categoria</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+        <app-form-dinamico  #formTipo [campos]="camposFormTipos" [botonLabel]="'Agregar'" (emitirDatos)=datosTipoEmitidos($event) ></app-form-dinamico> 
+    </ion-card-content>
+    <div class="consejos">
+      <h3 class="tituloConcejo">Consejo:</h3>
+      <div class="leyendaConcejo">
+             Agrega categorías de producto, estandarizar los tipos de producto ayudará para ordenar y filtrar datos de tu negocio.
+      </div>
+    </div>
+  </ion-card> 
+</div>
+</ion-content>

@@ -3,18 +3,20 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
-    path: '',
-    redirectTo: 'home',
-    pathMatch: 'full'
+    path: '',redirectTo: 'ventas', pathMatch: 'full'
   },
   {
-    path: 'home',
-    loadChildren: './home/home.module#HomePageModule'
+    path: 'ventas', loadChildren: './pages/ventas/ventas.module#VentasPageModule'
   },
   {
-    path: 'list',
-    loadChildren: './list/list.module#ListPageModule'
-  }
+    path: 'agregar', loadChildren: './pages/agregar/agregar.module#AgregarPageModule'
+  },
+  { 
+    path: 'edicion', loadChildren: './pages/edicion/edicion.module#EdicionPageModule' 
+  },
+  { path: 'reportes', loadChildren: './pages/reportes/reportes.module#ReportesPageModule' },
+  { path: 'graficas', loadChildren: './pages/graficas/graficas.module#GraficasPageModule' },
+  { path: 'inventario', loadChildren: './pages/inventario/inventario.module#InventarioPageModule' },
 ];
 
 @NgModule({
