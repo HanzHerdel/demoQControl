@@ -4,33 +4,15 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>Inventario</ion-title>
+    <div class="topOpsWraper">
+      <div class="ops">              
+        <ion-button (click)="generarPedido()"><ion-icon slot="start" name="md-download"></ion-icon>Pedido</ion-button>
+      </div>
+    </div>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [@animacionPagina]>
-    <ion-card>
-      <div class="cardConfiguracionTitulo"> 
-        <ion-icon  name="md-build"></ion-icon>
-        <label>
-          Opciones
-        </label>
-      </div>
-      <ion-card-content>
-          <div class="opsWrapper">
-            <div class="ops">
-              <label >En Limite</label>
-              <ion-toggle color="danger" slot="end" [(ngModel)]="filtroLimite"></ion-toggle>        
-            </div>
-            <div class="ops">
-              <label >Mostrar Todo</label>
-              <ion-toggle color="primary" slot="end" [(ngModel)]="todosLosArticulos"></ion-toggle>        
-            </div>
-            <div class="ops">              
-              <ion-button (click)="generarPedido()"><ion-icon slot="start" name="md-download"></ion-icon> Generar Pedido</ion-button>
-            </div>
-          </div>
-      </ion-card-content>
-    </ion-card>
   <ion-card *ngIf="!todosLosArticulos" [@animacionNgIf] class="tarjetas tarjetaBusqueda" style="background:var(--ion-color-light-tint)">
     <!-- Busqueda De Articulos -->
   <div class="divEtiquetaBusqueda" >        
@@ -86,27 +68,59 @@
       </div>
   </ion-card-content> 
 </ion-card>
-    <!-- TABLA DE ARTICULOS PARA SELECCIONAR -->
-    <ion-card class="cardTablaResultados" *ngIf="existenArticulos()"  [@animacionTablaItems] >
-      <div class="tablaGridContainer" >
-        <div *ngFor="let cabecera of cabeceras" class="cabeceraTabla" [ngClass]="cabecera.necesario ? '': 'bajar'" >
-          {{cabecera.cabecera}}
-        </div>
-        <ng-container *ngFor="let articulo of articulos;let odd=odd;let i=index" class="filaTabla">
-          <div class="filaTabla" id="fila{{i}}" (click)="selectItem(articulo, 'fila',i)">        
-            <div *ngFor="let cabecera of cabeceras" class="itemFila odd{{odd}}" [ngClass]="cabecera.necesario ? '': 'bajar'">
-              <ng-container *ngIf="cabecera.key=='precio'"  ><small>Q</small></ng-container>{{articulo[cabecera.key]}}
-            </div>
-            <div class="infoExtra"> 
-                <ng-container  *ngFor="let cabecera of cabeceras"  > 
-                  <ng-container *ngIf="cabecera.necesario==false"  >
-                  {{cabecera.cabecera | titlecase}}: {{articulo[cabecera.key]}} &nbsp;
-                  </ng-container>    
-                </ng-container>  
-            </div>
-          </div>
-        </ng-container>
+    <!-- TABLA DE ARTICULOS  -->
+  <ion-card class="cardTablaResultados" *ngIf="existenArticulos()"  [@animacionTablaItems] >
+    <div class="tablaGridContainer" >
+      <div *ngFor="let cabecera of cabeceras" class="cabeceraTabla" [ngClass]="cabecera.necesario ? '': 'quitLowResol'" >
+        {{cabecera.cabecera}}
       </div>
+      <ng-container *ngFor="let articulo of articulos;let odd=odd;let i=index" class="filaTabla">
+        <div *ngIf="!filtroLimite || articulo.sobreLimite" class="filaTabla" id="fila{{i}}" (click)="selectItem(articulo, 'fila',i)">       
+          <div *ngFor="let cabecera of cabeceras" class="itemFila odd{{odd}}" [ngClass]="cabecera.necesario ? '': 'quitLowResol'">
+            <ng-container *ngIf="cabecera.key=='precio'"  ><small>Q</small></ng-container>{{articulo[cabecera.key]}}
+            <ng-container *ngIf="!filtroLimite && articulo.sobreLimite && cabecera.key=='existencias' "  >
+                <span class="marcaItemAlerta"></span>
+            </ng-container>
+            <!-- <span style="background: #ff323294;
+            border-radius: 4px;
+            height: 3px;
+            width: calc(100% - 12px);
+            float: left;
+            margin-top: 15px;
+            left: 6px;
+            position: relative;"></span>  -->
+          </div>
+          <div class="infoExtra"> 
+            <ng-container  *ngFor="let cabecera of cabeceras"  > 
+              <ng-container *ngIf="cabecera.necesario==false"  >
+              {{cabecera.cabecera | titlecase}}: {{articulo[cabecera.key]}} &nbsp;
+              </ng-container>    
+            </ng-container>  
+          </div>
+        </div>
+      </ng-container>
+    </div>
   </ion-card>
-  <!-- FIN TABLA DE ARTICULOS PARA SELECCIONAR -->
+  <!-- FIN TABLA DE ARTICULOS -->
 </ion-content>
+<ion-footer>
+    <div class="opsFooter">
+        <div class="etiqueta">
+          <ion-icon  name="md-build"></ion-icon>
+          <label>
+            Opciones
+          </label>
+        </div>
+        <div class="opsWrapper">
+          
+          <div class="ops">
+            <label >En Alerta</label>
+            <ion-toggle (ionChange)="toogleFiltroEnAlerta()" color="danger" slot="end" [(ngModel)]="filtroLimite"></ion-toggle>        
+          </div>
+          <div class="ops">
+            <label >Mostrar Todo</label>
+            <ion-toggle (ionChange)="mostrarTodo()" color="primary" slot="end" [(ngModel)]="todosLosArticulos"></ion-toggle>        
+          </div>
+        </div>
+    </div>
+  </ion-footer>

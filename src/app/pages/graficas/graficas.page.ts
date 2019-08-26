@@ -124,6 +124,7 @@ camposACapitalizar=['nombre','tipo','proveedor','marca'];
 
 	/* VARIABLES DE HISTORIAL */
 		nItemsEnHistorial:number=1;
+		idArticuloEnHistorial:string;//variable para veririfar que no es el mismo articulo
 	/* VARIABLES TODAS LAS VENTAS*/
 	todasLasVentasLabelFooter:string="";
 valorRangoSensibilidad=180;
@@ -162,6 +163,7 @@ editableDateField: false,
 openSelectorOnInputClick: true,
 markCurrentDay: true,
 };
+
 ///////////////////////// suscripciones ///////////////////////////
 subscripcionData:Subscription;
 tiposSubscription:Subscription;
@@ -177,7 +179,6 @@ ventanaActual:boolean=false;//variable para anular la actualizacion de graficos
 		this.setDates();
 		this.ventanaActual=true;
 		this.opcionElegida="Todas Las Ventas";
-		this.tituloTabla=`Artículos Sin Movimiento (Desde ${this.initDate.toLocaleDateString()})`;
 		this.tipoDeChart="LineChart";
 		this.opcionesChart1={
 			'title':'Todas Las Ventas',
@@ -272,7 +273,7 @@ ventanaActual:boolean=false;//variable para anular la actualizacion de graficos
 						{cabecera:'Ventas',key:'ventas',necesario:true}
 					];
 				this.tipoDeChart="ColumnChart";
-				this.tituloTabla="Todos los Datos (en orden ganancias)";
+				this.tituloTabla="Todos los Datos (orden en ganancias)";
 				this.opcionesChart1={					
 						'title':'Ventas Por Producto',
 						backgroundColor: '#edffed',
@@ -438,6 +439,8 @@ ventanaActual:boolean=false;//variable para anular la actualizacion de graficos
 	}
 	dateInitChanged(event) {
 		this.initDate = event.jsdate;
+		if(this.opcionElegida=='Sin Movimiento')	
+			this.tituloTabla=`Artículos Sin Movimiento (Desde ${this.initDate.toDateString()})`;
 		this.realizarBusqueda();		
 	}
 
@@ -594,6 +597,11 @@ ventanaActual:boolean=false;//variable para anular la actualizacion de graficos
 	}
 	busquedaHistorial(itemAgregar=this.itemSelected){
 		if(itemAgregar!=null){
+			if(itemAgregar.id == this.idArticuloEnHistorial){
+				this.comun.alerta("Accion No Permitida", "El artículo ya esta en el gráfico");
+				return 
+			}
+			this.idArticuloEnHistorial = itemAgregar.id;
 			let historialPorDia=[];
 			let subs=this.data.getHistorialItem(this.initDate,this.endDate,itemAgregar.id).subscribe(data=>{
 				historialPorDia=this.unirVentasDeMismaFecha(data,this.itemSelected.nombre,'cantidad');
@@ -660,6 +668,7 @@ ventanaActual:boolean=false;//variable para anular la actualizacion de graficos
 	limpiarHistorial(){
 		this.datosChartUno=[];
 		this.historialesVentas=[];
+		this.itemSelected=null;
 		this.actualizarGraficos();
 	}
 /*  FIN HISTORIAL */

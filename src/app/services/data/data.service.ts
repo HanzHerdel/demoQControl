@@ -15,49 +15,15 @@ export class DataService {
    }
   /********** busqueda de articulos *************/
   buscarItemsFullFiltros(nombre="",marca=null, categoria=null,proveedor=null,limite:number=40){ 		
-    console.log(nombre,marca,categoria,proveedor);
     return this.db.collection('articulos', ref => {
-     //creacion de arreglo de busqueda dependiendo de los valores ingresados sintaxis copiada
-     let query: firebase.firestore.CollectionReference | firebase.firestore.Query = ref;
-     if(marca && categoria && proveedor){
-      query= query
-        .where('proveedor','==',proveedor)
-        .where('marca','==',marca)
-        .where('tipo','==',categoria)
-        .where('nombre','>=',nombre)
-        .orderBy('nombre','asc').limit(limite);
-    }else if(categoria && proveedor){
-      query= query
-        .where('categoria','==',categoria)
-        .where('proveedor','==',proveedor)
-        .where('nombre','>=',nombre).orderBy('nombre','asc').limit(limite);
-    }else if(marca && proveedor){
-      query= query
-        .where('marca','==',marca)
-        .where('proveedor','==',proveedor)
-        .where('nombre','>=',nombre).orderBy('nombre','asc').limit(limite);
-    }else if(marca && categoria){
-       query= query
-        .where('marca','==',marca)
-        .where('tipo','==',categoria)
-        .where('nombre','>=',nombre).orderBy('nombre','asc').limit(limite);
-     }else if(marca){
-       query=query
-        .where('marca','==',marca)
-        .where('nombre','>=',nombre).orderBy('nombre','asc').limit(limite);
-     }else if(categoria){
-       query=query
-       .where('tipo','==',categoria)
-       .where('nombre','>=',nombre).orderBy('nombre','asc').limit(limite);
-     }else if(proveedor){
-      query=query
-      .where('proveedor','==',proveedor)
-      .where('nombre','>=',nombre).orderBy('nombre','asc').limit(limite);
-    }else{
-       query=query.where('nombre','>=',nombre)
-       .orderBy('nombre','asc').limit(limite);
-     }
-     return query;
+      //creacion de arreglo de busqueda dependiendo de los valores ingresados
+        let query: firebase.firestore.CollectionReference | firebase.firestore.Query = ref;
+        query=query.where('nombre','>=',nombre);
+        //concatenar queries si vienen incluidas
+        if( proveedor)query= query && query.where('proveedor','==',proveedor)
+        if(categoria)query= query && query.where('tipo','==',categoria)
+        if(marca)query=query&& query.where('marca','==',marca) 
+        return query && query.orderBy('nombre','asc').limit(limite);
      }).snapshotChanges();	
  }
   public buscarPorCodigo(codigo,limite:number=40){
@@ -85,7 +51,6 @@ export class DataService {
     let fecha=firebase.firestore.FieldValue.serverTimestamp();
     data.fechaDeCreacion=fecha;
     data.fechaDeModificacion=fecha;
-    console.log(data);
     return this.db.collection('articulos').add(data);
   }
   crearProveedor(data){
@@ -112,7 +77,6 @@ export class DataService {
     /******************* fin creacion y obtencion de articulos *************************/
   /******************* EDICION DATOS *************************/
   buscarItemsEditar(nombre="",marca=null, categoria=null,proveedor=null,limite:number=40){ 		
-    console.log(nombre,marca,categoria,proveedor,"********");
     return this.db.collection('articulos', ref => {
      //creacion de arreglo de busqueda dependiendo de los valores ingresados sintaxis copiada
      let query: firebase.firestore.CollectionReference | firebase.firestore.Query = ref;
@@ -125,7 +89,7 @@ export class DataService {
         .orderBy('nombre','asc').limit(limite);
     }else if(categoria && proveedor){
       query= query
-        .where('categoria','==',categoria)
+        .where('tipo','==',categoria)
         .where('proveedor','==',proveedor)
         .where('nombre','>=',nombre).orderBy('nombre','asc').limit(limite);
     }else if(marca && proveedor){
@@ -158,13 +122,13 @@ export class DataService {
      }).get();	
   }
   getMarcasEditar(){
-    return this.db.collection('marca',ref => ref.orderBy('nombre',"desc")).snapshotChanges();
+    return this.db.collection('marca',ref => ref.orderBy('nombre',"asc")).snapshotChanges();
   }
   getTipoEditar(){
-    return this.db.collection('tipo',ref => ref.orderBy('nombre',"desc")).snapshotChanges();
+    return this.db.collection('tipo',ref => ref.orderBy('nombre',"asc")).snapshotChanges();
   }
   getProveedorEditar(){
-    return this.db.collection('proveedor',ref => ref.orderBy('nombre',"desc")).snapshotChanges();
+    return this.db.collection('proveedor',ref => ref.orderBy('nombre',"asc")).snapshotChanges();
   }
   editarDataGenerica(id:string,colleccion:string,data){
     let fechaDeModificacion=firebase.firestore.FieldValue.serverTimestamp();
@@ -196,63 +160,88 @@ export class DataService {
   getClientes(){
     return this.db.collection('clientes', ref=> ref.orderBy('nombre')).snapshotChanges();
   }
+  /**AGREGAR PAGE */
+  public getUtimosAgregados(){
+    return this.db.collection('articulos',ref=>ref.orderBy('agregado','desc').limit(15)).valueChanges();
+  }
   /************* FIN EDICION DATOS ****************/
   
   /******************** REPORTES ********************/
-    getVentas(initDay,endDay){
-      //console.log(initDay, endDay);
-      //const ref =this.db.collection('ventas');
-      return this.db.collection('ventas', 
-           ref => ref.where('fecha','<',endDay).where('fecha','>',initDay).orderBy('fecha','desc')).get();
-    }
-      /******************** REPORTES ********************/
+  getVentas(initDay,endDay){
+    return this.db.collection('ventas', 
+          ref => ref.where('fecha','<',endDay).where('fecha','>',initDay).orderBy('fecha','desc')).get();
+  }
+    /******************** REPORTES ********************/
 
-    getVentasReporte(initDay,endDay){
-      //console.log(initDay, endDay);
-      //const ref =this.db.collection('ventas');
-      //console.log(this.db.persistenceEnabled$);
-     // return this.db.firestore.collection('ventas').orderBy('fecha').startAt(initDay).endAt(endDay);// get({source:'server'}); 
-     /*let query = this.db.firestore.collection('ventas').orderBy('fecha').startAt(initDay).endAt(endDay);
-     return query.onSnapshot({includeMetadataChanges:true},  snap=> { 
-			this.ventas=[];
-			snap.forEach(venta=>{
-					console.log(venta.data());
-					let res = {id:venta.id, ...venta.data() };
-					this.ventas.push(res);
-					this.total += +venta.data().total;
-					this.totalCosto+=+venta.data().costo;
-				})
-				console.log("********",this.ventas);
-				this.datosVenta = true;
-				//unsubs();
-		}*/
-    
-     // return this.db.collection('ventas', ref => ref.where('fecha','<=',endDay).where('fecha','>=',initDay).orderBy('fecha','desc').limit(5000)).stateChanges()
-     return this.db.collection('ventas', ref => ref.where('fecha','<=',endDay).where('fecha','>=',initDay).orderBy('fecha','desc')).snapshotChanges();
-    }
-     public borrarVenta(id){
-       /*********modificar produccion hacer un update a la db al documento "eliminarVetas"
-        * para poder enviar el usuario que elimina la venta, parte de esta funcionalidad esta en functions/index.js ********/
-       return this.db.collection('ventas').doc(id).delete();
-     }
-        regresarItems(itemsDeVuelta){
-       let date= firebase.firestore.FieldValue.serverTimestamp();
-      // console.log(itemsDeVuelta);
-       for(let item of itemsDeVuelta){
-       //  console.log(item);
-       this.db.collection("articulos").doc(item.item).ref.get().then(doc=>{
-        let valorActual=item.unidades + doc.data().existencias;
-        console.log(valorActual)   
-        this.db.collection("articulos").doc(item.item).update({
-          "existencias" : valorActual,
-          "fechaDeModificacion":date,
-        }).then(x=>{
-          console.log(x);
-         console.log("items regresados");
-        });
-       });   
-      }     
-     }
+  getVentasReporte(initDay,endDay){
+    //console.log(initDay, endDay);
+    //const ref =this.db.collection('ventas');
+    //console.log(this.db.persistenceEnabled$);
+    // return this.db.firestore.collection('ventas').orderBy('fecha').startAt(initDay).endAt(endDay);// get({source:'server'}); 
+    /*let query = this.db.firestore.collection('ventas').orderBy('fecha').startAt(initDay).endAt(endDay);
+    return query.onSnapshot({includeMetadataChanges:true},  snap=> { 
+    this.ventas=[];
+    snap.forEach(venta=>{
+        console.log(venta.data());
+        let res = {id:venta.id, ...venta.data() };
+        this.ventas.push(res);
+        this.total += +venta.data().total;
+        this.totalCosto+=+venta.data().costo;
+      })
+      console.log("********",this.ventas);
+      this.datosVenta = true;
+      //unsubs();
+  }*/
+  
+    // return this.db.collection('ventas', ref => ref.where('fecha','<=',endDay).where('fecha','>=',initDay).orderBy('fecha','desc').limit(5000)).stateChanges()
+    return this.db.collection('ventas', ref => ref.where('fecha','<=',endDay).where('fecha','>=',initDay).orderBy('fecha','desc')).snapshotChanges();
+  }
+  public borrarVenta(id){
+    /*********modificar produccion hacer un update a la db al documento "eliminarVetas"
+    * para poder enviar el usuario que elimina la venta, parte de esta funcionalidad esta en functions/index.js ********/
+    return this.db.collection('ventas').doc(id).delete();
+  }
+  regresarItems(itemsDeVuelta){
+  let date= firebase.firestore.FieldValue.serverTimestamp();
+// console.log(itemsDeVuelta);
+  for(let item of itemsDeVuelta){
+  //  console.log(item);
+  this.db.collection("articulos").doc(item.item).ref.get().then(doc=>{
+  let valorActual=item.unidades + doc.data().existencias;
+  this.db.collection("articulos").doc(item.item).update({
+    "existencias" : valorActual,
+    "fechaDeModificacion":date,
+  }).then(x=>{
+    console.log(x);
+    console.log("items regresados");
+  });
+  });   
+}     
+  }
+  /** INVENTARIO */
+  getAllItems(filtroLimite=false){
+    if (filtroLimite)
+      return this.db.collection("articulos", ref => ref.where('sobreLimite','==',true)).get()
+    else
+      return this.db.collection("articulos").get()
+  }
+  getItemsFullFiltros(nombre="",marca=null, categoria=null,proveedor=null,sobreLimite=false,limite:number=40){     		
+    return this.db.collection('articulos', ref => {
+      let query: firebase.firestore.CollectionReference | firebase.firestore.Query = ref;
+      query=query.where('nombre','>=',nombre);
+      if( proveedor)
+        query= query && query.where('proveedor','==',proveedor)
+      if(categoria)
+        query= query && query.where('tipo','==',categoria)
+      if(marca)
+        query=query&& query.where('marca','==',marca) 
+      if(sobreLimite)
+        query=query&&query.where('sobreLimite','==',true);
+        console.log('query: ',query);
+     return query && query.orderBy('nombre','asc').limit(limite);
+     }).get();	
+ }
+  /** FIN INVENTARIO */
   /************************** GRAFICAS *************************/
 	/* public getProductosMasVendidos(limite:number=25,){
     return this.db.collection('articulos',ref => ref.orderBy('ventasTotales','desc').limit(limite)).snapshotChanges();
@@ -283,30 +272,15 @@ export class DataService {
            ref.where('codigo','==',codigo).limit(limite)).snapshotChanges();	
   }
   getItems(marca=null, tipo=null,nombre="",limite:number=40){
- 		
-    console.log(nombre,marca,tipo);
-    //
     return this.db.collection('articulos', ref => {
      //creacion de arreglo de busqueda dependiendo de los valores ingresados sintaxis copiada
      let query: firebase.firestore.CollectionReference | firebase.firestore.Query = ref;
-     if(marca && tipo){
-       query= query.where('marca','==',marca)
-       .where('tipo','==',tipo)
-       .where('nombre','>=',nombre)
-       .orderBy('nombre','asc').limit(limite);
-     }else if(marca){
-       query=query.where('marca','==',marca)
-       .where('nombre','>=',nombre)
-       .orderBy('nombre','asc').limit(limite);
-     }else if(tipo){
-       query=query.where('tipo','==',tipo)
-       .where('nombre','>=',nombre)
-       .orderBy('nombre','asc').limit(limite);
-     }else{
-       query=query.where('nombre','>=',nombre)
-       .orderBy('nombre','asc').limit(limite);
-     }
-     return query;
+      query=query.where('nombre','>=',nombre);
+      if(marca)
+        query=query && query.where('marca','==',marca);
+      if(tipo)
+        query=query && query.where('tipo','==',tipo);
+      return query &&query.orderBy('nombre','asc').limit(limite);
      }).snapshotChanges();	
  }
     /************************** FIN GRAFICAS *************************/

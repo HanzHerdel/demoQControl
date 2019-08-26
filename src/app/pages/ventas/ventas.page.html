@@ -1,4 +1,4 @@
-<div class="modalContainer" id="modalCliente" *ngIf="mostrarModal" [@animacionModal] (click)="cerrarModal()">
+<div class="modalContainer" id="modalCliente" *ngIf="agregarClienteModal" [@animacionModal] (click)="cerrarModal()">
   <ion-card class="cardCliete" (click)="stopPropagation($event)">
     <div class="cardHeader">Agregar Cliente</div>
     <ion-card-content>
@@ -6,6 +6,14 @@
     </ion-card-content>
   </ion-card>
 </div>
+<div class="modalContainer" id="modalCliente" *ngIf="editarClienteModal" [@animacionModal] (click)="cerrarModalEditar()">
+    <ion-card class="cardCliete" (click)="stopPropagation($event)">
+      <div class="cardHeader">Agregar Cliente</div>
+      <ion-card-content>
+          <app-form-dinamico  #formCliente [campos]="camposFormClienteEditar" [botonLabel]="'Editar'" (emitirDatos)=datosEditarCLienteEmitidos($event) ></app-form-dinamico>
+      </ion-card-content>
+    </ion-card>
+  </div>
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
@@ -79,12 +87,12 @@
     <!-- TABLA DE ARTICULOS PARA SELECCIONAR -->
     <ion-card class="cardTablaResultados" *ngIf="existenArticulos()"  [@animacionTablaItems] >
         <div class="tablaGridContainer" >
-          <div *ngFor="let cabecera of cabeceras" class="cabeceraTabla" [ngClass]="cabecera.necesario ? '': 'bajar'" >
+          <div *ngFor="let cabecera of cabeceras" class="cabeceraTabla" [ngClass]="cabecera.necesario ? '': 'quitLowResol'" >
             {{cabecera.cabecera}}
           </div>
           <ng-container *ngFor="let articulo of articulos;let odd=odd;let i=index" class="filaTabla">
             <div class="filaTabla" id="fila{{i}}" (click)="selectItem(articulo, 'fila',i)">        
-              <div *ngFor="let cabecera of cabeceras" class="itemFila odd{{odd}}" [ngClass]="cabecera.necesario ? '': 'bajar'">
+              <div *ngFor="let cabecera of cabeceras" class="itemFila odd{{odd}}" [ngClass]="cabecera.necesario ? '': 'quitLowResol'">
                 <ng-container *ngIf="cabecera.key=='precio'"  ><small>Q</small></ng-container>{{articulo[cabecera.key]}}
               </div>
               <div class="infoExtra"> 
@@ -124,12 +132,12 @@
       <!-- TABLA CARRITO -->
      <ion-card class="cardTabla cardCarrito" *ngIf="existeCarrito()"  [@animacionNgIf] >
         <div class="tablaContainerShopList" >
-          <div *ngFor="let cabecera of cabecerasCarrito" class="cabeceraTabla colorCarrito" [ngClass]="cabecera.necesario ? '': 'bajar'" >
+          <div *ngFor="let cabecera of cabecerasCarrito" class="cabeceraTabla colorCarrito" [ngClass]="cabecera.necesario ? '': 'quitLowResol'" >
             {{cabecera.cabecera}}
           </div>
           <ng-container *ngFor="let articulo of shopList;let odd=odd;let i=index" class="filaTabla">
             <div class="filaTablaCarrito" id="filaCarrito{{i}}" (click)="selectItemCarrito(articulo, 'filaCarrito',i,'selectedCarrito')">        
-              <div *ngFor="let cabecera of cabecerasCarrito" class="itemFila odd{{odd}}" [ngClass]="cabecera.necesario ? '': 'bajar'">
+              <div *ngFor="let cabecera of cabecerasCarrito" class="itemFila odd{{odd}}" [ngClass]="cabecera.necesario ? '': 'quitLowResol'">
                 <ng-container *ngIf="cabecera.key=='precio' || cabecera.key=='total'"  ><small>Q</small></ng-container>{{articulo[cabecera.key]}}
               </div>
               <div class="infoExtraCarrito"> 
@@ -176,7 +184,7 @@
                 [(ngModel)]="busquedaNit"  (ionCancel)="onCancel($event)" (ionChange)="searchNit()" debounce="1000"
                 placeholder="Nit Cliente">
               </ion-searchbar>
-              <ion-button class="botonAgregar" (click)="mostrarModal=true">Nuevo</ion-button>
+              <ion-button class="botonAgregar" (click)="agregarClienteModal=true">Nuevo</ion-button>
                           <!-- <div class="divBtnAgregarCliente">
             </div> -->
             </div>                   
@@ -190,6 +198,7 @@
                       <h2>{{cliente.nombre}}</h2>
                       <p>Nit: {{cliente.nit}} &nbsp; Teléfono: {{cliente.tel}} &nbsp; Dirección: {{cliente.dir}}</p>
                   </ion-label>
+                  <ion-button (click)="editarCliente(cliente)" color="amarillo"><ion-icon slot="start" name="create"></ion-icon> Editar</ion-button>
                   <ion-button end (click)="seleccionarCliente(cliente)">Seleccionar</ion-button>
               </ion-item>
             </ion-list>

@@ -36,8 +36,8 @@
           <ion-label stacked class="visible">
           Hasta
         </ion-label>			 	
-          <my-date-picker [options]="myDatePickerOptions"
-            (dateChanged)="dateEndChanged($event)"  [ngModel]="datePicker2"></my-date-picker>
+          <my-date-picker [options]="myDatePickerOptions" 
+            (dateChanged)="dateEndChanged($event)"  [ngModel]="datePicker2" [disabled]="opcionElegida =='Sin Movimiento'"></my-date-picker>
       </div>
       <ion-item class="tipoDeDatos">
         <ion-label position="stacked">
@@ -86,7 +86,7 @@
                       <ion-label  position="stacked">
                         Marca
                       </ion-label>
-                      <ion-select mode="ios" (ionChange)="search()" [(ngModel)]="marcaFiltro" interface="action-sheet"  >
+                      <ion-select  (ionChange)="search()" [(ngModel)]="marcaFiltro" interface="action-sheet"  >
                           <ion-select-option  selected="true" value=""></ion-select-option>
                           <ion-select-option *ngFor="let marca of marcas"  value="{{marca.nombre}}">{{marca.nombre}}</ion-select-option>
                       </ion-select>
@@ -97,7 +97,7 @@
                       <ion-label  position="stacked">
                         Proveedor
                       </ion-label>
-                      <ion-select mode="ios" (ionChange)="search()" [(ngModel)]="proveedorFiltro" interface="action-sheet">
+                      <ion-select (ionChange)="search()" [(ngModel)]="proveedorFiltro" interface="action-sheet">
                         <ion-select-option  selected="true" value=""></ion-select-option>
                         <ion-select-option *ngFor="let proveedor of proveedores"  value="{{proveedor.nombre}}">{{proveedor.nombre}}</ion-select-option>
                       </ion-select>
@@ -109,12 +109,12 @@
             <!-- TABLA DE BUSQUEDA -->
             <ion-card class="cardTablaResultados" *ngIf="existenArticulos()"  [@animacionTablaItems] >
               <div class="tablaGridContainer" >
-                <div *ngFor="let cabecera of cabecerasBusqueda" class="cabeceraTabla" [ngClass]="cabecera.necesario ? '': 'bajar'" >
+                <div *ngFor="let cabecera of cabecerasBusqueda" class="cabeceraTabla" [ngClass]="cabecera.necesario ? '': 'quitLowResol'" >
                   {{cabecera.cabecera}}
                 </div>
                 <ng-container *ngFor="let articulo of articulos;let odd=odd;let i=index" class="filaTabla">
                   <div class="filaTabla" id="{{articulo.id}}" (click)="selectItem(articulo, articulo.id)">        
-                    <div *ngFor="let cabecera of cabecerasBusqueda" class="itemFila odd{{odd}}" [ngClass]="cabecera.necesario ? '': 'bajar'">
+                    <div *ngFor="let cabecera of cabecerasBusqueda" class="itemFila odd{{odd}}" [ngClass]="cabecera.necesario ? '': 'quitLowResol'">
                       <ng-container *ngIf="cabecera.key=='precio'"  ><small>Q</small></ng-container>{{articulo[cabecera.key]}}
                     </div>
                     <div class="infoExtra"> 
@@ -158,16 +158,16 @@
          <google-chart (chartError)='error($event)' *ngIf="existenDatos(datosChartUno)"  class="piechart" [data]="chartDos"></google-chart>
        </div>
 
-      <!-- TABLA HISTORIAL DE VENTAS-->
+      <!-- TABLA HISTORIAL DE VENTAS / ARTICULOS SIN MOVIMIENTO-->
       <div *ngIf="opcionElegida =='Artículos Más Productivos'||opcionElegida =='Sin Movimiento'" [@genericaNgif]>
         <h3 class="tituloTabla">{{tituloTabla}}</h3>
         <div class="tablaGridContainer" style="max-height: 70vh; margin: 0px 2%;" >        
-          <div *ngFor="let cabecera of cabecerasTablaHistorial" class="cabeceraTabla" [ngClass]="cabecera.necesario ? '': 'bajar'" >
+          <div *ngFor="let cabecera of cabecerasTablaHistorial" class="cabeceraTabla" [ngClass]="cabecera.necesario ? '': 'quitLowResol'" >
             {{cabecera.cabecera}}
             </div>
             <ng-container *ngFor="let articulo of arrayDeArticulos;let odd=odd;let i=index" class="filaTabla">
               <div class="filaTabla" id="fila{{i}}" (click)="selectItem(articulo, 'fila',i)">        
-                <div *ngFor="let cabecera of cabecerasTablaHistorial" class="itemFila odd{{odd}}" [ngClass]="cabecera.necesario ? '': 'bajar'">
+                <div *ngFor="let cabecera of cabecerasTablaHistorial" class="itemFila odd{{odd}}" [ngClass]="cabecera.necesario ? '': 'quitLowResol'">
                   <ng-container *ngIf="cabecera.key=='precio'"  ><small>Q</small></ng-container>{{articulo[cabecera.key]}}
                 </div>
                 <div class="infoExtra"> 
@@ -181,7 +181,7 @@
             </ng-container>
           </div>
         </div>
-      <!-- FIN TABLA HISTORIAL DE VENTAS  -->
+      <!-- FIN TABLA HISTORIAL DE VENTAS / ARTICULOS SIN MOVIMIENTO -->
 </ion-content>
 <ion-footer *ngIf="opcionElegida =='Todas Las Ventas'"  [@genericaNgif]>
   <div class="todasLasVentasFooter">

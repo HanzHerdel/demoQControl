@@ -152,7 +152,6 @@ h4 {
   margin-top: 10px;
   margin-bottom: 10px;
   opacity: 1;
-  position: absolute;
   right: 0;
   left: 0;
 }
@@ -389,7 +388,7 @@ h4 {
         transition:all .5s  ease-in-out;
         height: fit-content;
       }
-      .bajar{
+      .quitLowResol{
         display: none;
       }
       :root{

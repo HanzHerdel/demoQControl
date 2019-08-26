@@ -1,32 +1,14 @@
 .tablaGridContainer {
-    max-height:80vh;
+    max-height: fit-content;
 }
-.opsWrapper{
+
+.topOpsWraper{
     width: auto;
-    padding: 3px;
+    padding: 5px;
     display: flex;
-    position: static;
-    top: 0px;
+    position: absolute;
+    top: 0;
     right: 0;
-    .ops{
-        flex-grow:1;
-        min-width: 75px;
-        width: auto;
-        align-items: center;
-        display: flex;
-        flex-direction: column;
-        label{
-            top: 1px;
-            display: block;
-            position: relative;
-            right: 10px;
-            font-size: 90%;
-            white-space: nowrap;        
-        }
-        ion-toggle{
-            --background: var(--backgroundGeneralliceblue);
-        }
-    }
 }
 .cardConfiguracionTitulo{
     text-align: center;
@@ -35,3 +17,43 @@
         margin:-1px 4px;
     }
 }
+.marcaItemAlerta{
+    background: #fe3434;
+    border-radius: 4px;
+    height: 3px;
+    width: calc(100% - 12px);
+    float: left;
+    margin-top: 15px;
+    left: 6px;
+    position: absolute;
+    box-shadow: 1px 1px 2px #999;
+}
+.opsFooter{
+    height: auto;
+    text-align: center;
+    padding: 0px;
+    color: white;
+    background: var(--ion-color-light-shade);
+    display: block;
+    .etiqueta{
+        float: left;
+        font-size: small;
+        width: 76px;
+        margin: 5px;
+    }
+    .ops{
+        display: inline-block;
+        margin: 0 5%;
+        text-align: center;
+        label{
+            display: inline-block;
+            vertical-align: top;
+            margin-top: 10px;
+            font-size: small;
+            white-space: nowrap;      
+        }
+        ion-toggle{
+            --background: var(--backgroundGeneralliceblue);
+        }
+    }
+  }

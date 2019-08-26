@@ -66,6 +66,7 @@ export class InventarioPage implements OnInit {
     busqueda:string="";
     busquedaCodigo:string="";
     articulos=[];
+    articulosLimite
     categorias=[];
     proveedores=[];
     marcas=[];
@@ -181,32 +182,33 @@ export class InventarioPage implements OnInit {
       if(this.busquedaCodigo.length>1){
       this.busquedaCodigo =this.busquedaCodigo.toUpperCase();
       this.marcaFiltro,this.tipoFiltro,this.busqueda,this.proveedorFiltro = "";
-      this.desubsripcionArticulos.next();
-      this.data.buscarPorCodigo(this.busquedaCodigo).pipe(takeUntil(this.desubsripcionArticulos)).subscribe( changes => {             
-        if(changes.size>0){
-          this.articulos=this.comun.extraerIdDatosGet(changes,this.camposACapitalizar);
-          }else{
-            this.comun.alerta("No Encontrado","el artículo no existe en la base de datos");
-          }
-        });
+      let sub =this.data.buscarPorCodigo(this.busquedaCodigo).subscribe( 
+        changes => {             
+          if(changes.size>0){
+            this.articulos=this.comun.extraerIdDatosGet(changes,this.camposACapitalizar);
+            }else{
+              this.comun.alerta("No Encontrado","el artículo no existe en la base de datos");
+            }
+          },
+        err=>console.log(err),
+        () =>sub.unsubscribe());
       }
     }
   }
   search(){
   this.busqueda =this.busqueda.toUpperCase();
   this.desubsripcionArticulos.next();
-  this.data.buscarItemsFullFiltros(this.busqueda,this.marcaFiltro,this.tipoFiltro,this.proveedorFiltro,100).pipe(takeUntil(this.desubsripcionArticulos))
-    .subscribe( changes => {
-      this.articulos=[];
-          changes.map(a => {
-            const data = a.payload.doc.data() as any;                  
-            //capitalizar campos requeridos para un mejor despliegue
-            this.camposACapitalizar.map(key=>data[key]=this.comun.capitalizar(data[key]))
-            const id = a.payload.doc.id;
-            let resEd = { id,  ...data };
-            this.articulos.push(resEd);
-            });
-        })
+  let sub=this.data.getItemsFullFiltros(this.busqueda,this.marcaFiltro,this.tipoFiltro,this.proveedorFiltro,this.filtroLimite,100)
+    .subscribe( 
+        changes => {
+          console.log(changes);
+          this.articulos=this.comun.extraerIdDatosGet(changes,this.camposACapitalizar);
+          console.log(this.articulos);
+        },
+        err => console.log(err)
+        ,
+        ()=>sub.unsubscribe()
+      )
   }
   onCancel(e){
     console.log(e);
@@ -214,44 +216,109 @@ export class InventarioPage implements OnInit {
 /** FIN BUSQUEDA DE ARTICULOS*/
   /******************* Funciones interfaz******************/
 //seleccionar filas en el cuadro de items
-selectItem(item,nombre,index,clase='selected'){
-  //si la variable c viene en la llamada de la funcion significa que viene del carrito y se seleccionara su debido item
-  //seleccion de la fila a la cual pertenece el item si no hay uno seleccionado
-    if(this.itemSelectedCarrito){
-      this.deSelectRow("selectedCarrito");
-      this.itemSelectedCarrito=null;
-      }
-    const id=nombre+index;
-    if (this.rowSelected ){
-      if (this.rowSelected.id === id){
-        this.deSelectRow(clase);
-        this.itemSelected=null;        
+  selectItem(item,nombre,index,clase='selected'){
+    //si la variable c viene en la llamada de la funcion significa que viene del carrito y se seleccionara su debido item
+    //seleccion de la fila a la cual pertenece el item si no hay uno seleccionado
+      if(this.itemSelectedCarrito){
+        this.deSelectRow("selectedCarrito");
+        this.itemSelectedCarrito=null;
+        }
+      const id=nombre+index;
+      if (this.rowSelected ){
+        if (this.rowSelected.id === id){
+          this.deSelectRow(clase);
+          this.itemSelected=null;        
+        }else{
+          this.deSelectRow(clase);
+          this.selectRow(id,clase);  
+          this.itemSelected=item;    
+        }
       }else{
-        this.deSelectRow(clase);
-        this.selectRow(id,clase);  
-        this.itemSelected=item;    
+        this.selectRow(id,clase);
+          this.itemSelected=item;
       }
+  }
+  selectRow(id,clase){
+    this.rowSelected = document.getElementById(id);
+    this.rowSelected.classList.add(clase);
+  }
+  deSelectRow(clase){
+    if (this.rowSelected ){
+      this.rowSelected.classList.remove(clase);
+      this.rowSelected=null;}
+  }
+  existenArticulos(){
+    return this.articulos.length>0;
+  }
+  /******************* FIn Funciones interfaz******************/ 
+  /**GENERAR PEDIDO */
+  toogleFiltroEnAlerta(){
+    if(this.todosLosArticulos)
+      {        
+        this.mostrarTodo()
     }else{
-      this.selectRow(id,clase);
-        this.itemSelected=item;
+      this.search();
     }
-}
-selectRow(id,clase){
-  this.rowSelected = document.getElementById(id);
-  this.rowSelected.classList.add(clase);
-}
-deSelectRow(clase){
-  if (this.rowSelected ){
-    this.rowSelected.classList.remove(clase);
-    this.rowSelected=null;}
-}
-existenArticulos(){
-  return this.articulos.length>0;
-}
-/******************* FIn Funciones interfaz******************/ 
-/**GENERAR PEDIDO */
-generarPedido(){
-  let pedido=[];
-  console.log('pedido: ', pedido);
-}
+  }
+  async mostrarTodo(){
+    if(this.todosLosArticulos){
+      let loading =await this.comun.crearLoading("Cargando");      
+      await loading.present();
+      let subsUltimaVenta=  this.data.getAllItems(this.filtroLimite).subscribe(changes=>{
+        this.articulos=this.comun.extraerIdDatosGet(changes,this.camposACapitalizar);
+          },
+          (err)=>{console.log(err);
+                 this.comun.alerta("Error","Ha ocurrido un error inesperado") 
+                 loading.dismiss();},
+          ()=>{
+            loading.dismiss();
+            subsUltimaVenta.unsubscribe();
+          })
+      }
+  }
+  generarPedido(){
+    let pedido=[];
+    console.log(this.articulos);
+    console.log('pedido: ', pedido);
+    pedido = this.articulos.map(articulo=>{
+      let item={'Unidades':articulo.limite*3,'Nombre':articulo.nombre,'Marca':articulo.marca,'Codigo':articulo.codigo,'id':articulo.id}
+      return item;
+    })
+    console.log('a',this.articulos);
+    console.log('p:',pedido);
+    const separator = ',';
+    const keys = Object.keys(pedido[0]);//obtencion de keys en el objeto 0 del array pedido 
+    const csvContent =
+      keys.join(separator) + //row encabezado
+      '\n' + //salto de linea marca fin de row
+      pedido.map(row => {
+        return keys.map(k => {
+          let cell = row[k] === null || row[k] === undefined ? '' : row[k];//creacion de celda con cada key y si es null o undef se agrega un string vacio
+          cell = cell instanceof Date ? //si es una fecha se hace el cambio a localedatestring
+                      cell.toLocaleDateString() : 
+                      cell.toString().replace(/"/g, '""');
+          if (cell.search(/("|,|\n)/g) >= 0) {
+            cell = `"${cell}"`; // si el string tiene '/n' ',' ó '"' se encierra entre comillas para evitar errores
+          }
+          return cell;
+        }).join(separator);//union de cada celda
+      }).join('\n'); // terminar con salto de linea
+
+    const blob = new Blob([csvContent], { type: 'data:application/csv' });
+    if (navigator.msSaveBlob) { // IE 10+
+      navigator.msSaveBlob(blob, "test1.csv");
+    } else {
+      const link = document.createElement('a');
+      if (link.download !== undefined) {
+        // Browsers that support HTML5 download attribute
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', "test1.csv");
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    }
+  }
 }

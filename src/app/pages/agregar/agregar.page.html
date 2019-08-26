@@ -87,3 +87,29 @@
   </ion-card> 
 </div>
 </ion-content>
+<!-- ULTIMOS AGREGADOS -->
+<ion-footer>
+    <ion-card id="ultimosAgregados" color="tertiary" class="ultimosAgregados" (click)="switchFooter()" >
+      <div class="etiquetaUltimosArticulos">Ultimos Articulos Agregados</div>
+      <div class="tablaGridContainer ultimosAgregadosTabla" >
+        <div *ngFor="let cabecera of cabeceras" class="cabeceraTabla" [ngClass]="cabecera.necesario ? '': 'quitLowResol'" >
+          {{cabecera.cabecera}}
+        </div>
+        <ng-container *ngFor="let articulo of ultimosItemsAgregados;let odd=odd;let i=index" >
+          <div class="filaTabla" id="fila{{i}}" >        
+            <div *ngFor="let cabecera of cabeceras" class="itemFila itemRecientes odd{{odd}}" [ngClass]="cabecera.necesario ? '': 'quitLowResol'">
+              <ng-container *ngIf="cabecera.key=='precio'"  >Q.</ng-container> {{articulo[cabecera.key]}}
+            </div>
+            <div class="infoExtra"> 
+                <ng-container  *ngFor="let cabecera of cabeceras"  > 
+                  <ng-container *ngIf="cabecera.necesario==false"  >
+                   {{cabecera.cabecera | titlecase}}: {{articulo[cabecera.key]}} &nbsp;
+                  </ng-container>    
+                </ng-container>  
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </ion-card>
+  </ion-footer>
+  

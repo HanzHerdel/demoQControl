@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AlertController, ToastController } from '@ionic/angular';
+import { AlertController, ToastController,LoadingController } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -7,12 +7,12 @@ import { AlertController, ToastController } from '@ionic/angular';
 export class ComunService {
   camposNumericos:Array<string>=['costo','existencias','limite','precio']
   camposString:Array<string>=['nombre','marca','proveedor','tipo']
-  constructor(private alertCtrl:AlertController,private toastCtrl:ToastController) {
+  constructor(private alertCtrl:AlertController,private toastCtrl:ToastController,private loading:LoadingController) {
     
-   }
+   }   
+   /* EXTRACCION DE DATOS SUBS FIREBASE */
    /************obtener data + id de un query 'get' *************/
    extraerIdDatosGet(querySnap,camposACapitalizar=[]){
-    console.log(querySnap);
     let datos=[]
     querySnap.forEach(a => {
       const data =a.data() as any; 
@@ -33,6 +33,19 @@ export class ComunService {
     return arrayDatos;
 
    }
+   extraerIdData(documentSnap, camposACapitalizar=[]){
+     let data=[];
+     documentSnap.map(a => {
+      const data = a.payload.doc.data() as any;                 
+      camposACapitalizar.map(key=>data[key]=this.capitalizar(data[key]))
+      const id = a.payload.doc.id;
+      let resEd = { id,  ...data };
+      data.push(resEd);
+      });
+      return data;
+   }
+  /* FIN EXTRACCION DE DATOS SUBS FIREBASE */
+/* FORMATOS DATOS */
    /********* dar formato uppercase a los textos y numero a los numeros en strings */
    darFormato(data){
     for(let key in data){
@@ -60,7 +73,8 @@ export class ComunService {
       }catch{}      
     return original;
   }
-
+/* FIN FORMATOS DATOS */ 
+/* FIN MENSAJES/ALERTAS  */
   async alertaToast(mensaje:string) {
     const toast = await   this.toastCtrl.create({      
       translucent:true,
@@ -78,6 +92,15 @@ export class ComunService {
     });
     await alert.present();
     setTimeout(()=>{try{alert.dismiss()}catch{}}, tiempo);
+  }
+  async alertaError(){
+    const alert = await this.alertCtrl.create({
+      header: "Error",
+      subHeader: "Ha ocurrido un error inesperado",
+      buttons: ['OK']
+    });
+    await alert.present();
+    setTimeout(()=>{try{alert.dismiss()}catch{}}, 2000);
   }
   async eliminarAlert( nombreEliminado:string,callBack) {
     const alert = await this.alertCtrl.create({
@@ -124,4 +147,15 @@ export class ComunService {
     });
     alert.present();
   }
+  async crearLoading(mensaje:string,duracion:number=0) {
+    const loading = await this.loading.create({
+      message: mensaje,
+      translucent: true,
+      duration: duracion,
+      spinner:'dots',
+    });
+    return loading
+
+  }
+/* FIN MENSAJES/ALERTAS  */
 }

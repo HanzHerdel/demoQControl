@@ -1,8 +1,8 @@
 .fechaYOpsWrapper{
+    text-align: center;
     display: flex;
     width: 100%;
-    padding: 10px;
-    margin: 10px 15px 20px;
+    padding: 20px;
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
@@ -11,6 +11,13 @@
         width: 33%;
         flex-grow: 1;
         max-width: 250px;
+        background: var(--ion-color-medium-shade);
+        margin: 5px;
+        color: white;
+        padding: 5px;
+        border-radius: 5px;
+        box-shadow: 3px 3px 3px #999;
+        box-sizing: content-box;
     }
 
 }
@@ -162,7 +169,6 @@
 }
         
 .footerDeTotales{
-    height: auto;
     padding: 7px;
     /*transition: all .4s .6s ease-in-out;
     -moz-transition: all .4s .6s ease-in-out;
@@ -172,9 +178,36 @@
     font-size: large;
     text-align: center;
     background: var(--ion-color-light-shade);
+    display: flex;
+    align-content: center;
+    flex-wrap: wrap;
+    flex: auto;
+    height: auto;
+    padding: 7px 0 0;
     cursor: pointer;
       color:white;
     label{
         margin: 0 5px;
+    }
+    .totales{
+        flex-grow: 1;
+        height: 32px;
+        span{
+            padding: 4px 12px;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+        .total{            
+            background: var(--ion-color-primary);
+        }
+        .costo{            
+            background: var(--ion-color-light);
+        }
+        .margen{            
+            background: #94c23e;//var(--ion-color-amarillo);
+        }        
+    }
+    .Q{
+        font-size: small;
     }
 }

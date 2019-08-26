@@ -10,7 +10,7 @@
              <ion-toggle color="primary" slot="end" [(ngModel)]="costos"></ion-toggle>        
          </div>
          <div class="ops">
-             <ion-button color="primary" (click)="generatePdf()"  >
+             <ion-button color="primary" (click)="generarPdf()"  >
                 <ion-icon name="document"></ion-icon><ion-icon name="download"></ion-icon></ion-button>
          </div>
     </div>
@@ -74,6 +74,18 @@
 </ion-content>
 <ion-footer>
     <div class="footerDeTotales" >
-        <label > <small>Ventas:</small> Q.{{total}} <ng-container *ngIf="costos"><small>Costos: Q.</small> {{totalCosto}} <small>Margen: Q.</small>{{total-totalCosto}}</ng-container></label> 						
+      <div class="totales">
+        <span class="total">Ventas: <small>Q.</small>{{total}}</span>
       </div>
+      <div *ngIf="costos" class="totales">
+        <span class="costo">
+             Costos: <small>Q.</small>{{totalCosto}} 
+        </span>             
+      </div>
+      <div *ngIf="costos" class="totales">
+        <span class="margen">
+          Margen: <small>Q.</small>{{total-totalCosto}}
+        </span>
+      </div>
+    </div>
 </ion-footer>

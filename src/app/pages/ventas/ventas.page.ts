@@ -140,21 +140,25 @@ export class VentasPage {
   clienteSeleccionado:any;
   leyendaSeleccionarCliente:string="Seleccionar Cliente";
   etiquetaCliente=this.leyendaSeleccionarCliente;
-    /***********CREACION DE CLIENTES */
+    /***********CREACION / EDICION DE CLIENTES */
   @ViewChild('formCliente')
   private formClienteComponent: FormDinamicoComponent;
   camposFormCliente=[];
   modalCliente:HTMLElement;
-  mostrarModal:boolean=false;
+  agregarClienteModal:boolean=false;
   clientes=[];
   busquedaCliente:string;
   busquedaNit:string;
-  /********************FIN CREACION DE CLIENTES************/
+  editarClienteModal:boolean=false;
+  camposFormClienteEditar=[];
+  clienteAEditar:any[];
+  /********************FIN CREACION / EDICION DE CLIENTES************/
   constructor(private data:DataService, private renderer2:Renderer2, private comun: ComunService,
     private firebaseAuth: AngularFireAuth
     ) {    
   }
-	login(email: string="contacto@quetzaltech.net", password: string="123456"){
+	async login(email: string="contacto@quetzaltech.net", password: string="123456"){
+    //let loading =await this.comun.crearLoading("Cargando");
     return this.firebaseAuth
       .auth.signInWithEmailAndPassword(email, password).then(value => {
         console.log(value,'Logueado!!!');
@@ -413,8 +417,11 @@ deSelectRow(clase){
     event.stopPropagation();
  }
  cerrarModal(){
-    this.mostrarModal=false;
+    this.agregarClienteModal=false;
  }
+ cerrarModalEditar(){
+  this.editarClienteModal=false;
+}
  /************* FOOTER CLIENTE************/
  switchFooter(){
    /*console.log("mostrar");
@@ -483,11 +490,13 @@ deSelectRow(clase){
       this.createSellData();
     }
   }
-  createSellData(){
+  async createSellData(){
     // array de items con su id y cantidad para su respectiva actualizacion en FiB
+    
+    let loading =await this.comun.crearLoading("Realizando Venta");
+    loading.present();
     let vendedor ={usuario:"Isaias Vendedor", nombre:"Isaias Camposeco", otrosDatos:"*-*-*-*"}//this.data.usuario; EDITARPROD
     let items = this.shopList.map( item =>{
-    console.log(item,"*********");
       return {
         "item":item.id , 
         "unidades":+item.cantidad, 
@@ -512,14 +521,15 @@ deSelectRow(clase){
     }
     //////////////////////////
     //envio de datos
-    console.log(sellData);
-    this.data.addVenta(sellData).then( docRef =>{
-        console.log("creado ",docRef);
+    this.data.addVenta(sellData).then( async docRef =>{
+        loading.dismiss();
         this.clearData();
         this.comun.alertaToast("Venta Realizada");
         this.search;
         })
         .catch((err)=>{
+          loading.dismiss();
+          this.comun.alertaError();
           console.log("error ", err);
         })
         //limpieza de datos para evitar duplicacion de datos
@@ -552,7 +562,7 @@ deSelectRow(clase){
         form.reset();
         form.enable();
         this.comun.alerta("Éxito",mensajeExito);
-        this.mostrarModal=false;
+        this.agregarClienteModal=false;
       }).catch(err=> {console.log(err,"**");this.comun.alerta("Error","ha ocurrido un error inesperado")});
   }
   seleccionarCliente(cliente){
@@ -561,5 +571,35 @@ deSelectRow(clase){
     this.etiquetaCliente=`${cliente.nombre} Nit: ${cliente.nit}`;
     this.switchFooter();
   }
-
+  editarCliente(cliente){
+    console.log(cliente);
+    this.editarClienteModal=true;
+    this.clienteAEditar=cliente;
+    this.camposFormClienteEditar=[];
+    for (let campo of environment.camposCliente){
+      let campoEditar=Object.assign({},campo);    
+      campoEditar['valor']=this.clienteAEditar[campo.nombreCampo];
+      this.camposFormClienteEditar.push(new campoBase(campoEditar));
+    }
+  }
+  datosEditarCLienteEmitidos(e){
+    const data:any=e;
+    const id = this.clienteAEditar['id'];
+    let form = this.formClienteComponent.form;
+    const coleccion="clientes";
+    this.comun.darFormato(data);
+    form.disable();
+    this.data.editarDataGenerica(id,coleccion,data).then(()=>
+      {        
+        this.buscarCliente();        
+        form.reset();
+        form.enable();
+        this.clienteAEditar=null;
+        this.editarClienteModal=false;
+        this.comun.alertaToast("Cliente editado");
+      }).catch(err=> 
+        {console.log(err,"**");
+        this.comun.alerta("Error","ha ocurrido un error inesperado");
+        form.enable();}); 
+  }
 }

@@ -24,6 +24,7 @@ export class campoBase<A> {
   opciones:string[];
   steps:number;//steps de cambio en campos numericos
   selectInterfaz:string;
+  disabled:boolean;
   constructor(opciones: {
       valor?: A,
       nombreCampo?: string,
@@ -43,6 +44,7 @@ export class campoBase<A> {
       opciones?:string[],
       steps?:number,
       selectInterfaz?:string,
+      disabled?:boolean,
     } = {}) {
     this.valor = opciones.valor;
     this.nombreCampo = opciones.nombreCampo || '';
@@ -61,6 +63,7 @@ export class campoBase<A> {
     this.placeholder = opciones.placeholder || '';
     this.opciones = opciones.opciones || [];
     this.steps=opciones.steps||1;
-    this.selectInterfaz=opciones.selectInterfaz || 'action-sheet'
+    this.selectInterfaz=opciones.selectInterfaz || 'action-sheet';
+    this.disabled = !!opciones.disabled;
   }
 }

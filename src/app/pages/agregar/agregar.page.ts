@@ -54,6 +54,19 @@ export class AgregarPage implements OnInit {
   desubsripcion = new Subject<void>();
   /*********************variables interfaz ******************/
   cardSelected:any;
+  /*footer*/
+  ultimosAgregados: HTMLElement;
+  ultimosItemsAgregados:any[];
+  cabeceras = [
+        {cabecera:'-',key:'existencias',necesario:true},
+        {cabecera:'Nombre',key:'nombre',necesario:true}, 
+        {cabecera:'Categoría',key:'tipo',necesario:true},             
+        {cabecera:'Código',key:'codigo',necesario:true},            
+        {cabecera:'Proveedor',key:'proveedor',necesario:false},
+        {cabecera:'Marca',key:'marca',necesario:false}, 
+        {cabecera:'Precio',key:'precio',necesario:true}
+
+      ];
   constructor(private data:DataService, private comun: ComunService) {
     /************* subscripciones de datos form item **************/
       this.data.getTipos().pipe(takeUntil(this.desubsripcion)).subscribe(changes=>{
@@ -85,6 +98,7 @@ export class AgregarPage implements OnInit {
   }
   ngOnInit() {   
     /*************** creacion de forms *****************/
+    this.ultimosAgregados=document.getElementById("ultimosAgregados");
     this.generarFormItems();//este se genera desde una funcion para poder ser llamado mas adelante ya que depende de los valores de marcas y tipos
     
     for(let campo of environment.camposTipos){
@@ -94,7 +108,15 @@ export class AgregarPage implements OnInit {
       this.camposFormProveedor.push(new campoBase(campo));
     }
     for(let campo of environment.camposMarcas)
-      this.camposFormMarcas.push(new campoBase(campo))
+     { this.camposFormMarcas.push(new campoBase(campo))}
+     this.data.getUtimosAgregados().pipe(takeUntil(this.desubsripcion)).subscribe(changes=>{
+      this.ultimosItemsAgregados=[];
+        changes.forEach(articulo=> 
+          {
+            this.ultimosItemsAgregados.push(articulo);
+          })          
+          //this.generarFormItems();
+      }) 
     /***************** Fin creacion de forms ********************/
     setTimeout(()=>this.switch('agregarItemCard'),800);
   }
@@ -178,8 +200,13 @@ export class AgregarPage implements OnInit {
         this.comun.alerta("Éxito",mensajeExito);
       }).catch(err=> {console.log(err,"**");this.comun.alerta("Error","ha ocurrido un error inesperado")});
   }
-
-  
+  /*switchFooter*/
+  switchFooter(){
+    if (!this.ultimosAgregados.classList.contains("abierto"))
+      this.ultimosAgregados.classList.add( "abierto");
+    else this.ultimosAgregados.classList.remove( "abierto");
+      // this.ultimosEditados.nativeElement.height = '80px'; 
+  }
     /************ fin  funciones de creacion de datos ************/
 
 }

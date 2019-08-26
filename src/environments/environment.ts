@@ -3,7 +3,7 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false,
+  production: true,
 
   firebase:  {
     apiKey: "AIzaSyDX8w7z_R4se9pwNO1kvp_kjmvB9iSwkfE",
@@ -84,6 +84,7 @@ export const environment = {
     {nombreCampo:'notas', etiqueta:'Notas',maxCaracteres:100,claseCss:"campoTextoExtendido"},
   ],
   // FIN CAMPOS MARCAS
+  // CAMPOS CLIENTE
   camposCliente:[    
     { nombreCampo:"nombre",etiqueta:"Nombre", 
     etiquetaErrRequerido:"El Nombre del Cliente es requerido", requerido:true,
@@ -93,12 +94,13 @@ export const environment = {
       minCaracteres:8, maxCaracteres:8,  },
     {nombreCampo:"nit",etiqueta:"Nit",
       minCaracteres:3, maxCaracteres:9,requerido:true, etiquetaErrRequerido:"El nit es obligatorio",
-      patronRequerido:true,patronRequeridoString:"[A-Za-z0-9]+",etiquetaErrPatron:"El Nit solo puede contener números o letras",
+      patronRequerido:true,patronRequeridoString:"[A-Za-z0-9 -]+",etiquetaErrPatron:"El Nit solo puede contener números, letras y guiones",
     },
     {nombreCampo:"email",etiqueta:"Correo Electrónico",tipoDeDato:"email",},     
     {nombreCampo:"dir",etiqueta:"Dirección", claseCss:"campoTextoExtendido",},
     {nombreCampo:"notas",etiqueta:"Notas",claseCss:"campoTextoExtendido",},   
   ],
+  // FIN CAMPOS CLIENTE
 };
 
 /*

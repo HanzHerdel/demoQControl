@@ -1,5 +1,6 @@
 export const environment = {
   production: true,
+
   firebase:  {
     apiKey: "AIzaSyDX8w7z_R4se9pwNO1kvp_kjmvB9iSwkfE",
     authDomain: "demoutz-217701.firebaseapp.com",
@@ -32,7 +33,7 @@ export const environment = {
       tipoDeDato:'number',
       etiquetaErrRequerido:"Las unidades del producto son obligatorias",
       valor:"1",requerido:true,claseCss:'campoNum',},
-   { nombreCampo: 'limite',etiqueta:'Límite de Uindades',
+   { nombreCampo: 'limite',etiqueta:'Límite de Unidades',
       tipoDeDato:'number',
       requerido:true,etiquetaErrRequerido: 'Asigna limite para saber cuando necesitas mas unidades',
       claseCss:'campoNumLimite',   },

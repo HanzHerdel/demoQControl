@@ -254,8 +254,8 @@ edicionGenerica(nombreColeccion:string, form:FormGroup,data:{},id){
   datosItemEmitidos(e){
     const data:any=e;
     const id=this.itemSelected.id;
-    console.log(e);
-    data.sobreLimite=(data.existencias<= data.limite);
+    console.log("1",data);
+    data.sobreLimite=!!(data.existencias<= data.limite);
     console.log(data);
     let form = this.formItemComponent.form;
     this.edicionGenerica("articulos",form,data,id).then(()=>
@@ -329,13 +329,13 @@ edicionGenerica(nombreColeccion:string, form:FormGroup,data:{},id){
     for (let campo of environment.camposMarcas){
       let campoEditar=Object.assign({},campo);    
       campoEditar['valor']=this.marcaAEditar[campo.nombreCampo];
+      if(campo.nombreCampo=='nombre') campoEditar['disabled']=true;
       this.camposFormMarcas.push(new campoBase(campoEditar));
     }
   }
   datosMarcaEmitidos(e){
       const data:any=e;
       const id = this.marcaAEditar.id;
-      //console.log(e);
       let form = this.formMarcasComponent.form;
       this.edicionGenerica("marca",form,data,id).then(()=>
           {        
@@ -372,6 +372,7 @@ categoriaAEditarSeleccionada(opcion){
   for (let campo of environment.camposTipos){
     let campoEditar=Object.assign({},campo);     
     campoEditar['valor']=this.categoriaAEditar[campo.nombreCampo];
+    if(campo.nombreCampo=='nombre') campoEditar['disabled']=true;
     this.camposFormTipos.push(new campoBase(campoEditar));
   }
 }
@@ -413,6 +414,7 @@ proveedorAEditarSellecionado(opcion){
   for(let campo of environment.camposProveedor){    
     let campoEditar=Object.assign({},campo);   
     campoEditar['valor']=this.proveedorAEditar[campo.nombreCampo];
+    if(campo.nombreCampo=='nombre') campoEditar['disabled']=true;
     this.camposFormProveedor.push(new campoBase(campoEditar));
   }
 }
@@ -458,12 +460,12 @@ preguntarEliminarProveedor(){
       this.cardSelected.classList.remove('colapsado');
     }
     }  /*****************footer ultimos editados *************************/
-    switchFooter(){
-      if (!this.ultimosEditados.classList.contains("abierto"))
-        this.ultimosEditados.classList.add( "abierto");
-      else this.ultimosEditados.classList.remove( "abierto");
-        // this.ultimosEditados.nativeElement.height = '80px'; 
-    }
+  switchFooter(){
+    if (!this.ultimosEditados.classList.contains("abierto"))
+      this.ultimosEditados.classList.add( "abierto");
+    else this.ultimosEditados.classList.remove( "abierto");
+      // this.ultimosEditados.nativeElement.height = '80px'; 
+  }
   
   /*************** fin funciones de interfaz ****************/
   /*************************** Alertas / loading**************************/
