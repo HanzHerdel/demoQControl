@@ -22,6 +22,12 @@
     <ion-title>
       Realizar Ventas
     </ion-title>
+    <div *ngIf="opcionFactura" [@animacionNgIf]  class="opsWrapper">
+      <div class="ops">
+          <label >Impimir Facturas</label>
+           <ion-toggle color="primary" slot="end" [(ngModel)]="facturas"></ion-toggle>        
+       </div>
+    </div>
   </ion-toolbar>
 </ion-header>
 <ion-content [@animacionPagina] (click)="bajarFooter()">
@@ -159,7 +165,7 @@
       <!--FIN TABLA CARRITO -->
       <!-- VENDER -->
     <div *ngIf="existeCarrito()" [@animacionNgIf] class="realizarVenta" >
-        <ion-button (click)="procesarVenta()" >
+        <ion-button (click)="verificarVentayCliente()" >
             <ion-icon name="ios-cash"></ion-icon>
             &nbsp;Realizar Venta
         </ion-button> 

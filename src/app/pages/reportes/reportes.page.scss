@@ -153,10 +153,11 @@
             width: 30px;
             height: 40px;
         }
-        :active{
-            background: #fff;
-            opacity: .7;
-        }
+        transition: transform .1 linear;
+    }
+   .bordeEliminar:active{
+        box-shadow: 0 2px 0 #697a826a;
+        transform: translateY(3px);
     }
     .bordeEliminar:hover{
         ion-icon{
@@ -167,47 +168,82 @@
 
 
 }
-        
-.footerDeTotales{
-    padding: 7px;
-    /*transition: all .4s .6s ease-in-out;
-    -moz-transition: all .4s .6s ease-in-out;
-    -o-transition:all .4s .6s ease-in-out;
-    -webkit-transition:all .4s .6s ease-in-out;
-    opacity: 1;*/
-    font-size: large;
-    text-align: center;
-    background: var(--ion-color-light-shade);
-    display: flex;
-    align-content: center;
-    flex-wrap: wrap;
-    flex: auto;
-    height: auto;
-    padding: 7px 0 0;
-    cursor: pointer;
-      color:white;
-    label{
-        margin: 0 5px;
+/* GASTOS*/
+.divGastos{
+    padding: 10px 9%;
+    .etiqueta{
+        border-bottom: 1px solid var(--ion-color-medium);
+        padding: 0 10px;
     }
-    .totales{
-        flex-grow: 1;
-        height: 32px;
-        span{
-            padding: 4px 12px;
-            border-radius: 4px;
+    .gastosWrapper{    
+        padding: 5px;
+        display: flex;
+        .dataWrapper{
+            padding: 5px;        
+            background: var(--ion-color-amarillo-tint);
+            display: inline-block;
+            flex: 10;        
+            color: white;
+            border-radius: 8px 0 0 8px;
+            box-shadow: 2px 2px 2px #999;
+            .icon{
+                float: left;
+                margin: 4px;
+                height: 28px;
+                width: 28px;
+                position: relative;
+                color: black;
+            }
+            .data{
+                padding:5px;
+            }
+            .nombre{
+                text-align: center;
+                font-size: 110%;
+            }
+            .flexBox{
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            label{
+                font-family: inherit;
+                line-height: normal;
+                background: var(--ion-color-amarillo-shade);
+                padding: 5px 8px;
+                border-radius: 4px;
+                color: black;
+            }
+        }
+        .bordeEliminar{
+            box-shadow: 2px 2px 2px #999;
+            text-align: center;
+            display: inline-block;
+            flex:1;
+            text-overflow: clip;
             white-space: nowrap;
+            background:var(--ion-color-danger);
+            border-radius: 0 8px 8px 0;
+            height: inherit;
+            cursor: pointer;
+            ion-icon{
+                position: relative;
+                top: calc(50% - 20px);
+                color: white;
+                width: 30px;
+                height: 40px;
+            }
+            transition: transform .1s linear;
         }
-        .total{            
-            background: var(--ion-color-primary);
+    .bordeEliminar:active{
+            box-shadow: 0 2px 2px #999;
+            transform: translateY(3px);
         }
-        .costo{            
-            background: var(--ion-color-light);
+        .bordeEliminar:hover{
+            ion-icon{
+                width: 36px;
+            } 
         }
-        .margen{            
-            background: #94c23e;//var(--ion-color-amarillo);
-        }        
-    }
-    .Q{
-        font-size: small;
     }
 }
+/*FIN GASTOS*/     

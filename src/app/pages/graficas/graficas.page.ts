@@ -4,7 +4,7 @@ import { ChartErrorEvent } from 'ng2-google-charts';
 import { Subscription, Subject } from 'rxjs';
 import { IMyDpOptions } from 'mydatepicker/';
 import { DataService } from 'src/app/services/data/data.service';
-import { ComunService } from 'src/app/services/comun.service';
+import { ComunService, animacionPag } from 'src/app/services/comun.service';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { takeUntil } from 'rxjs/operators';
 @Component({
@@ -12,6 +12,20 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './graficas.page.html',
   styleUrls: ['./graficas.page.scss'],
   animations:[
+	animacionPag(),
+    trigger('animacionNgIf', [      
+      transition(':enter', [
+        style({ height: 0, opacity: 0 }),
+        animate('.5s ease-out', 
+                style({ height: 32, opacity: 1 }))
+      ]),
+      transition(':leave',          [
+        style({ height: 32, opacity: 1 }),
+        animate('.5s ease-in', 
+                style({ height: 0, opacity: 0 }))
+        ]),
+        ]
+      ),
 	trigger('animacionTablaItems', [      
         transition(':enter', [
           style({ 'max-height': 0, opacity: 0 }),
@@ -38,19 +52,6 @@ import { takeUntil } from 'rxjs/operators';
                   style({  opacity: 0 }))
         ]),
 	  ]),
-	  trigger('animacionNgIf', [      
-		transition(':enter', [
-		  style({ height: 0, opacity: 0 }),
-		  animate('.5s ease-out', 
-				  style({ height: 32, opacity: 1 }))
-		]),
-		transition(':leave',          [
-		  style({ height: 32, opacity: 1 }),
-		  animate('.5s ease-in', 
-				  style({ height: 0, opacity: 0 }))
-		  ]),
-		  ]
-		),
 	trigger('animacionLimpiarGph', [      
 		transition(':enter', [
 			style({ 'width': '0px', opacity: 0 }),
@@ -108,27 +109,30 @@ cabecerasBusqueda=[
 camposACapitalizar=['nombre','tipo','proveedor','marca'];
 /********variables de interfaz tabla**********/
 /* VARIABLES GRAFICOS */
-	tipoDeChart:string="ColumnChart";//puede ser PieChart o ColumnChart	
-	chartUno: GoogleChartInterface;
-	chartDos: GoogleChartInterface;
-	datosChartUno=[];// =[['Articulo', 'Ventas']];
-	datosChartDos=[];//=[['Articulo', 'Ganancias']]
-	historialesVentas=[];
-	/* VARIABLES GRAFICOS 'MAS PRODUCTIVOS'*/
-		sinDatosVentas:boolean=false;//ocultar graficos y leyenda predeterminada de graficos cuando no exista data
-		limiteDatos:number=10;
-		ventas: any;
-		diccionarioArticulosAgrupados:any;
-		arrayDeArticulos=[];
-		datosVentas: boolean = false; //verificacion de existencia de datos
+tipoDeChart:string="ColumnChart";//puede ser PieChart o ColumnChart	
+chartUno: GoogleChartInterface;
+chartDos: GoogleChartInterface;
+datosChartUno=[];// =[['Articulo', 'Ventas']];
+datosChartDos=[];//=[['Articulo', 'Ganancias']]
+historialesVentas=[];
+/* VARIABLES GRAFICOS 'MAS PRODUCTIVOS'*/
+sinDatosVentas:boolean=false;//ocultar graficos y leyenda predeterminada de graficos cuando no exista data
+limiteDatos:number=10;
+ventas: any;
+diccionarioArticulosAgrupados:any;
+arrayDeArticulos=[];
+datosVentas: boolean = false; //verificacion de existencia de datos
 
-	/* VARIABLES DE HISTORIAL */
-		nItemsEnHistorial:number=1;
-		idArticuloEnHistorial:string;//variable para veririfar que no es el mismo articulo
-	/* VARIABLES TODAS LAS VENTAS*/
-	todasLasVentasLabelFooter:string="";
+/* VARIABLES DE HISTORIAL */
+nItemsEnHistorial:number=1;
+idArticuloEnHistorial:string;//variable para veririfar que no es el mismo articulo
+/* VARIABLES TODAS LAS VENTAS*/
+todasLasVentasLabelFooter:string="";
 valorRangoSensibilidad=180;
 sensibilidadPieChart:number=0.018;
+totalGastos:number;
+totalVentas:number;
+totalGanancias:number;
 ////////////////// variables intervalo de fechas////////////////////
 datePicker1: any;
 datePicker2: any;	
@@ -173,7 +177,7 @@ ventanaActual:boolean=false;//variable para anular la actualizacion de graficos
 	constructor(private data:DataService,  private comun: ComunService) {
 	}
 	public error(event: ChartErrorEvent) {
-		console.log(event);
+		//console.log(event);
 	  }
 	ngOnInit() {
 		this.setDates();
@@ -354,16 +358,15 @@ ventanaActual:boolean=false;//variable para anular la actualizacion de graficos
 	filtrarVentasPorFechaYArticulo() {
 		let subs=this.data.getVentas(this.initDate, this.endDate).subscribe(data => {
 			this.diccionarioArticulosAgrupados=this.agruparVentasDeArticulo(data);
-			console.log(this.diccionarioArticulosAgrupados);
+			//console.log(this.diccionarioArticulosAgrupados);
 			this.ordenarArticulosMasProd();
 			this.actualizarGraficos();
 		},
 		(err)=>{console.log(err)},
 		()=>{
-			console.log('busqueda terminada');
+			//console.log('busqueda terminada');
 			subs.unsubscribe();
-		}
-		)
+		})
 	}
 	//agrupa las ventas de articulos en uno mismo y 
 	agruparVentasDeArticulo(data){
@@ -425,10 +428,10 @@ ventanaActual:boolean=false;//variable para anular la actualizacion de graficos
 	ordenarPorGanancia(a, b) {
 	  return b.ganancias - a.ganancias;
 	}
-	rangoSensibilidadPieChart(){
+	/*rangoSensibilidadPieChart(){
 		this.sensibilidadPieChart=this.valorRangoSensibilidad/1000;
 		this.actualizarGraficos();
-	}
+	}*/
 	limiteDatosColumnChart(){
 		this.realizarBusqueda();
 	}
@@ -461,8 +464,10 @@ ventanaActual:boolean=false;//variable para anular la actualizacion de graficos
 			for (let i=1;i <arrayGananciasDia.length;i++){
 				ganancias += arrayGananciasDia[i][1];
 			}			
-			console.log(ventas.toFixed(2),ganancias.toFixed(2));
-			this.todasLasVentasLabelFooter=`Ventas: Q.${ventas.toFixed(2)} Ganancias: Q.${ganancias.toFixed(2)}`;
+			//console.log(ventas.toFixed(2),ganancias.toFixed(2));
+			this.totalVentas=Math.round(ganancias * 100) / 100;
+			this.totalGanancias=Math.round(ventas * 100) / 100;
+			//this.todasLasVentasLabelFooter=`Ventas: Q.${ventas.toFixed(2)} Ganancias: Q.${ganancias.toFixed(2)}`;
 			 //(Del ${this.initDate.toLocaleDateString()} Al ${this.endDate.toLocaleDateString()} )`
 			this.datosChartDos=arrayGananciasDia;
 			this.datosChartUno=arrayVentasDia;
@@ -470,9 +475,25 @@ ventanaActual:boolean=false;//variable para anular la actualizacion de graficos
 		},
 		(err)=>{console.log(err)},
 		()=>{
-			console.log('busqueda terminada');
+			//console.log('busqueda terminada');
 			subs.unsubscribe();
 		}
+		)
+		//obtencion de gastos
+		let sub=this.data.getGastosGraficas(this.initDate, this.endDate)
+		.subscribe(data=>{
+			this.totalGastos = 0;
+			data.forEach(venta => {
+				const data = venta.data() as any;
+				this.totalGastos+=+data.cantidad;
+			});
+			this.totalGastos=Math.round(this.totalGastos * 100) / 100;
+			},
+			(err)=>{console.log(err)},
+			()=>{
+			//console.log('busqueda terminada');
+			sub.unsubscribe();
+			}
 		)
 	}
 /** FIN TODAS LAS VENTAS */
@@ -516,10 +537,11 @@ ventanaActual:boolean=false;//variable para anular la actualizacion de graficos
 		data.forEach(historial=>{										
 				const datos=historial.data();
 				const fechaCompleta =datos.fecha.toDate();
-				console.log(fechaCompleta);
+				//console.log(fechaCompleta);
 				//extraccion de fecha sin hora
 				const fecha=new Date(fechaCompleta.getFullYear() ,fechaCompleta.getMonth(),fechaCompleta.getDate());
-				console.log(fecha);
+				//console.log(fecha);
+				//si la bandera de ganancias esta activa se restara el costo sino el costo sera 0
 				let costo = ganancias ? datos['costo']:0;
 				//si es la primer iteracion la fechaAnterior sera esta misma,se asigna la cantidad de dia actual y se agrega al primer index
 				if(fechaAnterior==null){						

@@ -1,0 +1,12 @@
+
+    .header{
+        background: var(--ion-color-primary);
+        color:white;
+        padding: 12px
+    }
+    .configCard{
+        flex-grow: 1;
+        display: inline-block;
+        width: auto;
+        background: var(--invOpsCard);
+    }

@@ -1,4 +1,4 @@
-import { ComunService } from './../../services/comun.service';
+import { ComunService, animacionPag } from './../../services/comun.service';
 import { Component, ViewChild, Renderer2,OnInit } from '@angular/core';
 import { FormDinamicoComponent } from 'src/app/formsDinamicos/form-dinamico/form-dinamico.component';
 import { DataService } from 'src/app/services/data/data.service';
@@ -14,19 +14,7 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './inventario.page.html',
   styleUrls: ['./inventario.page.scss'],
   animations: [
-    trigger('animacionPagina', [      
-      transition(':enter', [
-        style({  opacity: 0 }),
-        animate('1s ease-out', 
-                style({  opacity: 1 }))
-      ]),
-      transition(':leave',          [
-        style({  opacity: 1 }),
-        animate('1s ease-in', 
-                style({ opacity: 0 }))
-        ]),
-        ]
-      ),
+    animacionPag(),
     trigger('animacionNgIf', [      
       transition(':enter', [
         style({ height: 0, opacity: 0 }),
@@ -286,7 +274,7 @@ export class InventarioPage implements OnInit {
     })
     console.log('a',this.articulos);
     console.log('p:',pedido);
-    const separator = ',';
+    const separator = ';';
     const keys = Object.keys(pedido[0]);//obtencion de keys en el objeto 0 del array pedido 
     const csvContent =
       keys.join(separator) + //row encabezado

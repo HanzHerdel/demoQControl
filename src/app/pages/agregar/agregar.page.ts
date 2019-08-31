@@ -1,4 +1,3 @@
-import { AlertController } from '@ionic/angular';
 import { DataService } from '../../services/data/data.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 
@@ -7,7 +6,7 @@ import { FormDinamicoComponent } from '../../formsDinamicos/form-dinamico/form-d
 import {  Subject } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import { environment } from 'src/environments/environment';
-import { ComunService } from 'src/app/services/comun.service';
+import { ComunService, animacionPag } from 'src/app/services/comun.service';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { takeUntil } from 'rxjs/operators';
 
@@ -16,16 +15,17 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: 'agregar.page.html',
   styleUrls: ['agregar.page.scss'],
   animations: [
-    trigger('animacionPagina', [      
+    animacionPag(),
+    trigger('animacionNgIf', [      
       transition(':enter', [
-        style({  opacity: 0 }),
-        animate('1s ease-out', 
-                style({  opacity: 1 }))
+        style({ height: 0, opacity: 0 }),
+        animate('.5s ease-out', 
+                style({ height: 32, opacity: 1 }))
       ]),
       transition(':leave',          [
-        style({  opacity: 1 }),
-        animate('1s ease-in', 
-                style({ opacity: 0 }))
+        style({ height: 32, opacity: 1 }),
+        animate('.5s ease-in', 
+                style({ height: 0, opacity: 0 }))
         ]),
         ]
       ),
@@ -54,7 +54,7 @@ export class AgregarPage implements OnInit {
   desubsripcion = new Subject<void>();
   /*********************variables interfaz ******************/
   cardSelected:any;
-  /*footer*/
+  /*footer ultimos agregados*/
   ultimosAgregados: HTMLElement;
   ultimosItemsAgregados:any[];
   cabeceras = [
@@ -67,6 +67,7 @@ export class AgregarPage implements OnInit {
         {cabecera:'Precio',key:'precio',necesario:true}
 
       ];
+  /*fin footer ultimos agregados*/
   constructor(private data:DataService, private comun: ComunService) {
     /************* subscripciones de datos form item **************/
       this.data.getTipos().pipe(takeUntil(this.desubsripcion)).subscribe(changes=>{

@@ -29,8 +29,41 @@ descargarArchivo(){
     console.log('error on creating path : ' + err);
   });*/
   }
-  generaTablaDeDatosReporte(ventas){
+  generaTablaDeDatosVentas(venta){
+    let bodyData=[];
+    //let i=1;
+    let total=0;
+    /*generacion de la tabla*/
+    let encabezado = [
+            {text:"U.", fontSize: 10, bold:true, alignment: 'center'},
+            {text:"Producto", fontSize: 10, bold:true, alignment: 'center'},
+            {text:"Precio", fontSize: 10, bold:true, alignment: 'center'},
+            {text:"Total", fontSize: 10, bold:true, alignment: 'center'}];
+            
+    bodyData.push(encabezado);
+      //console.log(venta);
+      let dataRow=[];
+      /*por cada item en la venta se genera una linea */
+      venta.items.forEach(item =>{
+      let itemRow=[]
+      itemRow.push(item.unidades.toString());
+      itemRow.push(item.nombre +" - " +item.marca||"" + " - " + (item.tipo||"") );
+      itemRow.push((item.precio).toFixed(2));
+      itemRow.push((item.precio*item.unidades).toFixed(2));
+      bodyData.push(itemRow)
+      });
+      let totalRow=["","","","total: Q"+(venta.total).toFixed(2)]
+      total+=venta.total;
+      bodyData.push(totalRow);
+      /* al final de cada venta agregamos una linea extra para separarlo */
+      bodyData.push(["","","",""]);
+      //i++;
 
+
+    return bodyData
+  }
+
+  generaTablaDeDatosReporte(ventas){
     let bodyData=[];
     //let i=1;
     let total=0;

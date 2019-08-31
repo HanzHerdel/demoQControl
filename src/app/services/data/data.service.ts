@@ -174,32 +174,15 @@ export class DataService {
     /******************** REPORTES ********************/
 
   getVentasReporte(initDay,endDay){
-    //console.log(initDay, endDay);
-    //const ref =this.db.collection('ventas');
-    //console.log(this.db.persistenceEnabled$);
-    // return this.db.firestore.collection('ventas').orderBy('fecha').startAt(initDay).endAt(endDay);// get({source:'server'}); 
-    /*let query = this.db.firestore.collection('ventas').orderBy('fecha').startAt(initDay).endAt(endDay);
-    return query.onSnapshot({includeMetadataChanges:true},  snap=> { 
-    this.ventas=[];
-    snap.forEach(venta=>{
-        console.log(venta.data());
-        let res = {id:venta.id, ...venta.data() };
-        this.ventas.push(res);
-        this.total += +venta.data().total;
-        this.totalCosto+=+venta.data().costo;
-      })
-      console.log("********",this.ventas);
-      this.datosVenta = true;
-      //unsubs();
-  }*/
-  
-    // return this.db.collection('ventas', ref => ref.where('fecha','<=',endDay).where('fecha','>=',initDay).orderBy('fecha','desc').limit(5000)).stateChanges()
     return this.db.collection('ventas', ref => ref.where('fecha','<=',endDay).where('fecha','>=',initDay).orderBy('fecha','desc')).snapshotChanges();
   }
   public borrarVenta(id){
     /*********modificar produccion hacer un update a la db al documento "eliminarVetas"
     * para poder enviar el usuario que elimina la venta, parte de esta funcionalidad esta en functions/index.js ********/
     return this.db.collection('ventas').doc(id).delete();
+  }
+  getGastosReporte(initDay,endDay){
+    return this.db.collection('gastos', ref => ref.where('fecha','<=',endDay).where('fecha','>=',initDay).orderBy('fecha','desc')).snapshotChanges();
   }
   regresarItems(itemsDeVuelta){
   let date= firebase.firestore.FieldValue.serverTimestamp();
@@ -283,6 +266,9 @@ export class DataService {
       return query &&query.orderBy('nombre','asc').limit(limite);
      }).snapshotChanges();	
  }
+ getGastosGraficas(initDay,endDay){
+  return this.db.collection('gastos', ref => ref.where('fecha','<=',endDay).where('fecha','>=',initDay).orderBy('fecha','desc')).get();
+}
     /************************** FIN GRAFICAS *************************/
 
     /******************funciones especiales ***************/

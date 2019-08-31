@@ -21,7 +21,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content [@animacionPagina]>
   <!-- SELECCION DE TIPO DE DATOS -->
       <!-- SELECCION DE FECHAS -->
     <div class="flexBox opcionesWrapper" *ngIf="opcionElegida=='Artículos Más Productivos' || 'Historial De Artículo'">				
@@ -184,7 +184,19 @@
       <!-- FIN TABLA HISTORIAL DE VENTAS / ARTICULOS SIN MOVIMIENTO -->
 </ion-content>
 <ion-footer *ngIf="opcionElegida =='Todas Las Ventas'"  [@genericaNgif]>
-  <div class="todasLasVentasFooter">
-    {{todasLasVentasLabelFooter}}
-  </div>
+    <div class="footerDeTotales" >
+        <div class="totales">
+          <span class="total">Ventas: <small>Q.</small>{{totalVentas}}</span>
+        </div>
+        <div class="totales">
+            <span class="gasto">
+              Gastos: <small>Q.</small>{{totalGastos}}
+            </span>
+        </div>
+        <div  class="totales">
+          <span class="margen">
+              Ganancias: <small>Q.</small>{{totalGanancias-totalGastos}}
+          </span>
+        </div>
+      </div>
 </ion-footer>

@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      Gastos
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content  [@animacionPagina]>
+  <div class="flexBox">
+    <ion-card *ngIf="true" class="configCard" id="agregarUsuarioCard"  >	
+      <ion-card-header class="header">
+        <ion-icon name="md-paper-plane"></ion-icon> Solicitar Gasto
+      </ion-card-header>	
+      <ion-card-content>
+        <app-form-dinamico #formGastos [campos]="camposGastos" [botonLabel]="'Agregar Gasto'" (emitirDatos)=datosGastoEmitidos($event) ></app-form-dinamico>
+      </ion-card-content>
+    </ion-card>
+    
+    <!-- <ion-card *ngIf="gastos" [@animacionNgIf]>
+      <ion-card-header class="header">
+        <ion-icon name="md-cash"></ion-icon> Aprovar Gasto
+      </ion-card-header>	
+      <ion-card-content>
+        <ion-item *ngFor="let gasto of gastos" >
+          {{gasto.concepto}}
+        </ion-item>
+      </ion-card-content>
+    </ion-card> -->
+  </div>
+</ion-content>

@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { AlertController, ToastController,LoadingController } from '@ionic/angular';
+import { style, animate, trigger, transition } from '@angular/animations';
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class ComunService {
   camposNumericos:Array<string>=['costo','existencias','limite','precio']
   camposString:Array<string>=['nombre','marca','proveedor','tipo']
@@ -159,3 +161,33 @@ export class ComunService {
   }
 /* FIN MENSAJES/ALERTAS  */
 }
+/**animacion Pagina y animacion Ngif */
+export function animacionPag(){
+  return trigger('animacionPagina', [      
+        transition(':enter', [
+          style({  opacity: 0 }),
+          animate('1s ease-out', 
+                  style({  opacity: 1 }))
+        ]),
+        transition(':leave',[
+          style({  opacity: 1 }),
+          animate('1s ease-in', 
+                  style({ opacity: 0 }))
+          ]),
+          ])
+    }
+export function animacionIf(){  
+  trigger('animacionNgIf', [      
+    transition(':enter', [
+      style({ height: 0, opacity: 0 }),
+      animate('.5s ease-out', 
+              style({ height: 32, opacity: 1 }))
+    ]),
+    transition(':leave',          [
+      style({ height: 32, opacity: 1 }),
+      animate('.5s ease-in', 
+              style({ height: 0, opacity: 0 }))
+      ]),
+      ]
+    )
+  }

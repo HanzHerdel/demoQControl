@@ -31,8 +31,11 @@ ion-menu{
   --background: rgba(255,255,255,.08)!important;
   transition:--background .4s ease-in-out;
   text-decoration: underline;
+  ion-icon{
+    transform: scale(1.5);
+  }
   .ventas{
-    color:var(--ion-color-primary);
+    color:var(--ion-color-primary);    
   }
   .agregar{
     color:var(--ion-color-secondary-tint);
@@ -48,6 +51,12 @@ ion-menu{
   }
   .inventario{
     color:var( --ion-color-success-tint);
+  }
+  .configuracion{
+    color:var(--ion-color-medium-shade);
+  }
+  .gastos{
+    color:var(--ion-color-tertiary-shade);
   }
 }
 .footerLogo{
@@ -140,7 +149,15 @@ h4 {
     width: 300px;
     max-height:38px;
 }*/
-
+.tituloContent{
+  text-align: right;
+  margin: 0 30px;
+  border-bottom: 4px solid gray;
+}
+.flexBox{
+	display: flex;
+	flex-wrap:wrap;
+}
 .tarjetas {
   transition: opacity .6s .3s ease-in-out;
   width: 98%;
@@ -315,8 +332,8 @@ h4 {
 .campoSelec{
     max-width:240px;
     min-width: 180px;
-    padding-top:-6px;
-    margin: -2px;
+   // padding-top:-6px;
+   // margin: -2px;
 }
 .campoNum{
     min-width:120px;
@@ -342,19 +359,68 @@ h4 {
     max-height: 95%;
     margin-top: 4%;
 }
-/********** MODIFICACION DE SELECTOR DE CAMPO SELECT EN INTERFAZ ACTION SHEET***************/
-.mydp .alignselectorright {
-  right: -20px !important;
+/********** FIN MODIFICACION DE SELECTOR DE CAMPO SELECT EN INTERFAZ ACTION SHEET***************/
+/*MODIFICACION DE DATE PICKER PARA NO APARECER CORRIDO EN APP*/
+.fixedPicker > .mydp .alignselectorright {
+  right: auto;
 }
-.tituloContent{
-  text-align: right;
-  margin: 0 30px;
-  border-bottom: 4px solid gray;
+.fixedPicker > .mydp .selectorarrowright::before{
+left: 14%;
 }
-.flexBox{
-	display: flex;
-	flex-wrap:wrap;
+
+.mydp, .mydp .headertodaybtn{
+  border:none !important;
 }
+/*FIN MODIFICACION DE DATE PICKER PARA NO APARECER CORRIDO EN APP*/
+
+  /*FOOTER GRAFICAS Y REPORTES*/
+.footerDeTotales{
+    padding: 7px;
+    /*transition: all .4s .6s ease-in-out;
+    -moz-transition: all .4s .6s ease-in-out;
+    -o-transition:all .4s .6s ease-in-out;
+    -webkit-transition:all .4s .6s ease-in-out;
+    opacity: 1;*/
+    font-size: large;
+    text-align: center;
+    background: var(--ion-color-light-shade);
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    flex: auto;
+    height: auto;
+    padding: 7px 0 0;
+    cursor: pointer;
+      color:white;
+    label{
+        margin: 0 5px;
+    }
+    .totales{
+        margin: 5px 5px 0px;
+        height: 32px;
+        span{
+            padding: 4px 12px;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+        .total{            
+            background: var(--ion-color-primary);
+        }
+        .gasto{
+            background: var(--ion-color-tertiary-shade);
+        }
+        .costo{            
+            background: var(--ion-color-light);
+        }
+        .margen{            
+            background: #94c23e;//var(--ion-color-amarillo);
+        }        
+    }
+    .Q{
+        font-size: small;
+    }
+}
+/*FIN FOOTER GRAFICAS Y REPORTES*/
 @media (max-width: 620px) {
     .filaTabla:hover > .infoExtra{
         display: block;

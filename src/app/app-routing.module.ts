@@ -17,6 +17,8 @@ const routes: Routes = [
   { path: 'reportes', loadChildren: './pages/reportes/reportes.module#ReportesPageModule' },
   { path: 'graficas', loadChildren: './pages/graficas/graficas.module#GraficasPageModule' },
   { path: 'inventario', loadChildren: './pages/inventario/inventario.module#InventarioPageModule' },
+  { path: 'configuracion', loadChildren: './pages/configuracion/configuracion.module#ConfiguracionPageModule' },
+  { path: 'gastos', loadChildren: './pages/gastos/gastos.module#GastosPageModule' },
 ];
 
 @NgModule({

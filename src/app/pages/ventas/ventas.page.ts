@@ -1,4 +1,5 @@
-import { ComunService } from './../../services/comun.service';
+import { DescargasService } from './../../services/descargas/descargas.service';
+import { ComunService,animacionPag } from './../../services/comun.service';
 import { Component, ViewChild, Renderer2 } from '@angular/core';
 import { FormDinamicoComponent } from 'src/app/formsDinamicos/form-dinamico/form-dinamico.component';
 import { DataService } from 'src/app/services/data/data.service';
@@ -9,27 +10,20 @@ import { environment } from 'src/environments/environment';
 import { FormGroup } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
 
+/*FACTURAS*/
+import * as pdfmake from 'pdfmake/build/pdfmake';
+import * as pdfFonts from 'pdfmake/build/vfs_fonts';
+
 /* cambiar el loging en produccion */
 import { AngularFireAuth } from '@angular/fire/auth';
+import { Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-ventas',
   templateUrl: 'ventas.page.html',
   styleUrls: ['ventas.page.scss'],
   animations: [
-    trigger('animacionPagina', [      
-      transition(':enter', [
-        style({  opacity: 0 }),
-        animate('1s ease-out', 
-                style({  opacity: 1 }))
-      ]),
-      transition(':leave',          [
-        style({  opacity: 1 }),
-        animate('1s ease-in', 
-                style({ opacity: 0 }))
-        ]),
-        ]
-      ),
+    animacionPag(),
     trigger('animacionNgIf', [      
       transition(':enter', [
         style({ height: 0, opacity: 0 }),
@@ -84,8 +78,10 @@ import { AngularFireAuth } from '@angular/fire/auth';
 
 
 export class VentasPage {
-
-    /////////////////declaracion de variables de busqueda
+  // FACTURAS
+  facturas:boolean = false;
+  opcionFactura:boolean=false;
+  //BUSQUEDA
   tipoFiltro:string="";
   marcaFiltro:string="";
   proveedorFiltro:string="";
@@ -96,7 +92,7 @@ export class VentasPage {
   proveedores=[];
   marcas=[];
   desubsripcionArticulos = new Subject<void>();
-  /* variables handler lector de codigo de barras*/
+  //LECTOR DE CODIGO DE BARRA
   detenerEventoLector:any;
   leyendo:boolean=false;
   handler:any;
@@ -154,15 +150,14 @@ export class VentasPage {
   clienteAEditar:any[];
   /********************FIN CREACION / EDICION DE CLIENTES************/
   constructor(private data:DataService, private renderer2:Renderer2, private comun: ComunService,
-    private firebaseAuth: AngularFireAuth
+    private firebaseAuth: AngularFireAuth, private descargas: DescargasService,private platform:Platform
     ) {    
   }
 	async login(email: string="contacto@quetzaltech.net", password: string="123456"){
     //let loading =await this.comun.crearLoading("Cargando");
     return this.firebaseAuth
       .auth.signInWithEmailAndPassword(email, password).then(value => {
-        console.log(value,'Logueado!!!');
-
+        //console.log(value,'Logueado!!!');
       })  ;
   	}
 
@@ -176,12 +171,21 @@ export class VentasPage {
     for(let campo of environment.camposCliente){
       this.camposFormCliente.push(new campoBase(campo));
     }
+    this.platform.ready().then(val=>      
+    {
+      console.log("****",val);
+      if (this.platform.is('mobileweb')){
+      this.facturas=true;
+      this.opcionFactura=true;
+    }}
+    )
   }
   ngOnDestroy() {
     this.desubsDatosEstaticos.next();
     this.desubsDatosEstaticos.complete();   
     this.desubsripcionArticulos.next();
     this.desubsripcionArticulos.complete();
+    this.detenerEventoLector();
   }
   suscripcionesDatos(){
     this.data.getTipoEditar().pipe(takeUntil(this.desubsDatosEstaticos)).subscribe(changes=>{
@@ -309,7 +313,7 @@ selectItemCarrito(item,nombre,index,clase){
     this.itemSelected=null;
     this.deSelectRow('selected');
   }
-  console.log(nombre,index,"**");
+  //console.log(nombre,index,"**");
     const id=nombre+index;
     if (this.rowSelected ){
       if (this.rowSelected.id === id){
@@ -356,7 +360,7 @@ deSelectRow(clase){
           const total = cantidad * itemAgregar.precio;
         if(this.validarExistencias(itemAgregar,cantidad)){
             let item = {cantidad, ...itemAgregar, total};
-            console.log(item)
+            //console.log(item)
             this.shopList.push(item);
             console.log(this.shopList);
           }
@@ -449,13 +453,15 @@ deSelectRow(clase){
       let sus=this.data.buscarCliente(this.busquedaCliente).subscribe( changes => {             
         if(changes.size>0){
             this.clientes=this.comun.extraerIdDatosGet(changes);
-            console.log(this.clientes);
+           //console.log(this.clientes);
           }else{
             this.comun.alerta("No Encontrado","el nit no existe en la base de datos");
           }
         }
         ,err=>{console.log("Error al cargar: ",err)},
-        ()=>{console.log("busqueda Completada");sus.unsubscribe();}
+        ()=>{
+          console.log("busqueda Completada");
+          sus.unsubscribe();}
         );
       }
   }
@@ -470,12 +476,15 @@ deSelectRow(clase){
           }
         }
         ,err=>{console.log("Error al cargar: ",err)},
-        ()=>{console.log("busqueda Completada");sus.unsubscribe();}
+        ()=>{
+          //console.log("busqueda Completada");
+        sus.unsubscribe();}
         );
       }
   }
 /******************Pocesar Venta ******************/
-  procesarVenta(){
+  //VERIFICACION DE CARRITO Y CLIENTE
+  verificarVentayCliente(){
     //console.log("**********",this.shopList,"***********");
     if( this.shopList.length <1){
       this.comun.alerta("Upps!","Nada que vender :(")
@@ -484,13 +493,13 @@ deSelectRow(clase){
     if(!this.clienteSeleccionado){
       this.comun.alertaConOps("Sin datos de Cliente", "¿Deséa continuar la venta sin agregar cliente?",()=>{  
         this.clienteSeleccionado=[];
-        this.createSellData();
+        this.realizarVenta();
       })
     }else{
-      this.createSellData();
+      this.realizarVenta();
     }
   }
-  async createSellData(){
+  async realizarVenta(){
     // array de items con su id y cantidad para su respectiva actualizacion en FiB
     
     let loading =await this.comun.crearLoading("Realizando Venta");
@@ -523,6 +532,9 @@ deSelectRow(clase){
     //envio de datos
     this.data.addVenta(sellData).then( async docRef =>{
         loading.dismiss();
+        if(this.facturas){
+          this.facturar(sellData)
+        }
         this.clearData();
         this.comun.alertaToast("Venta Realizada");
         this.search;
@@ -534,11 +546,76 @@ deSelectRow(clase){
         })
         //limpieza de datos para evitar duplicacion de datos
     }
+  facturar(sellData){
+    let bodyData=this.descargas.generaTablaDeDatosVentas(sellData);
+    let date = new Date;
+    let fecha= date.toLocaleDateString();
+    bodyData.unshift([            
+      {text:"Nit: "+ sellData.cliente.nit, fontSize: 10, noWrap: true,alignment: 'left'},
+      {text:"Nombre: "+sellData.cliente.nombre, fontSize: 10, noWrap: true,alignment: 'left'},
+      {text:"Fecha: "+fecha, colSpan: 2, fontSize: 10, noWrap: true ,alignment: 'right'},{}])
+      /* creacion del objeto pdf */
+    console.log("***",bodyData);
+    pdfmake.vfs = pdfFonts.pdfMake.vfs;
+    
+    var docDefinition = {
+      content: [
+        {
+          columns: [
+          /**cabecera del documento, los estilos estan definidos abajo */
+            [
+            { text: 'Quetzaltech', style: 'header' },
+            { text: 'Soluciones Modernas', style: 'sub_header' },
+            { text: 'Teléfonos: 7765-4193 / 5923-1542', style: 'normal' },
+            { text: 'Dirección: Calle Rodolfo Robles 16-12 Quetzaltenango', style: 'normal' },
+            {text:""},
+            ]
+            ]
+        },        
+        {  
+          /** datos de ventas */
+          margin:[ 0, 35, 0, 20 ],style: 'filaProducto',layout: 'lightHorizontalLines',
+          table: 
+          {    
+            headerRows: 2,
+            widths: [70,420,110,110],                                               
+            body: bodyData                    
+          }
+        },
+ 
+      ],
+      styles: {
+        header: {
+        bold: true,
+        fontSize: 20,
+        alignment: 'right'
+        },
+        sub_header: {
+        fontSize: 17,
+        alignment: 'right'
+        },
+        normal: {
+        fontSize: 14,
+        alignment: 'right'
+        },
+        filaProducto: {
+          fontSize: 10,
+          bold: false,
+          alignment: 'center',                   
+          },
+        },
+      pageSize: 'A4',
+      pageOrientation: 'landscape'
+      };			
+    let pdfObj=pdfmake.createPdf(docDefinition);
+    pdfObj.open();
+    //pdfObj.download("test");
+  }
   clearData(){
     this.shopList.map(item =>{
       item.cantidad=0;
       item.total=0;
-      console.log(item);
+      //console.log(item);
     });
     this.shopList=[];  
     this.articulos=[];
@@ -556,7 +633,7 @@ deSelectRow(clase){
   creacionGenerica(nombreColeccion:string, form:FormGroup,data:{},mensajeExito:string){
     this.comun.darFormato(data);//formato de mayusculas y cambio de string a number 
     form.disable();
-    console.log(data,"***********");
+    //console.log(data,"***********");
     this.data.crearDataGenerica(nombreColeccion,data).then(()=>
       {        
         form.reset();
@@ -572,7 +649,7 @@ deSelectRow(clase){
     this.switchFooter();
   }
   editarCliente(cliente){
-    console.log(cliente);
+    //console.log(cliente);
     this.editarClienteModal=true;
     this.clienteAEditar=cliente;
     this.camposFormClienteEditar=[];

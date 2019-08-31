@@ -1,6 +1,3 @@
-import { CampoDinamicoComponent } from '../../formsDinamicos/campo-dinamico/campo-dinamico.component';
-import { FormDinamicoComponent } from '../../formsDinamicos/form-dinamico/form-dinamico.component';
-
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';

@@ -1,0 +1,99 @@
+
+.flexContainer{
+    display: flex;
+    flex-wrap: wrap;
+    .header{
+        background: var(--ion-color-primary);
+        color:white;
+        padding: 12px
+    }
+    .configCard{
+        flex-grow: 1;
+        display: inline-block;
+        width: auto;
+        background: var(--invOpsCard);
+    }
+    .usuarioWrapper{    
+        padding: 5px;
+        display: flex;
+        .dataUsuarioWrapper{
+            padding: 5px;        
+            background: var(--ion-color-medium);
+            display: inline-block;
+            flex: 10;        
+            color: white;
+            border-radius: 8px 0 0 8px;
+            .iconUsr{
+                float: left;
+                margin: 4px;
+                height: 28px;
+                width: 28px;
+                position: relative;
+            }
+            .dataUsuario{
+                padding:5px;
+            }
+            .nombre{
+                text-align: center;
+                font-size: 160%;
+            }
+            .flexBox{
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            label{
+                font-family: inherit;
+                line-height: normal;
+                background: var(--ion-color-medium-shade);
+                padding: 5px 8px;
+                border-radius: 4px;
+            }
+        }
+        .bordeEditar{
+            flex:1;
+            text-overflow: clip;
+            white-space: nowrap;
+            background:var(--ion-color-amarillo-tint);
+            height: inherit;
+            cursor: pointer;
+            text-align: center;
+            ion-icon{
+                position: relative;
+                top: calc(50% - 20px);
+                color: var(--letras);
+                width: 30px;
+                height: 40px;
+            }
+            transition: transform .1s linear;
+        }
+        .bordeEliminar{
+            text-align: center;
+            display: inline-block;
+            flex:1;
+            text-overflow: clip;
+            white-space: nowrap;
+            background:var(--ion-color-danger);
+            border-radius: 0 8px 8px 0;
+            height: inherit;
+            cursor: pointer;
+            ion-icon{
+                position: relative;
+                top: calc(50% - 20px);
+                color: white;
+                width: 30px;
+                height: 40px;
+            }
+            transition: transform .1s linear;
+        }
+        .bordeEditar:active,.bordeEliminar:active{
+            box-shadow: 0 2px 2px #999;
+            transform: translateY(3px);
+        }
+        .bordeEliminar:hover,.bordeEditar:hover{
+            ion-icon{
+                width: 36px;
+            } 
+        }
+    }
+}

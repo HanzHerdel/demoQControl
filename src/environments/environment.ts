@@ -1,7 +1,9 @@
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
+export interface opcionesCampo{
 
+}
 export const environment = {
   production: true,
 
@@ -87,7 +89,7 @@ export const environment = {
   // CAMPOS CLIENTE
   camposCliente:[    
     { nombreCampo:"nombre",etiqueta:"Nombre", 
-    etiquetaErrRequerido:"El Nombre del Cliente es requerido", requerido:true,
+    etiquetaErrRequerido:"El Nombre del Cliente es Requerido", requerido:true,
     claseCss:"campoTextoExtendido", maxCaracteres:100, },
     { nombreCampo:"tel",etiqueta:"Teléfono",
       etiquetaErrRequerido:"El contacto queriere un telefono", requerido:true,
@@ -100,7 +102,36 @@ export const environment = {
     {nombreCampo:"dir",etiqueta:"Dirección", claseCss:"campoTextoExtendido",},
     {nombreCampo:"notas",etiqueta:"Notas",claseCss:"campoTextoExtendido",},   
   ],
+  camposUsuario:[    
+    { nombreCampo:"nombre",etiqueta:"Nombre", 
+    etiquetaErrRequerido:"El nombre del usuario es requerido", requerido:true,
+    claseCss:"campoTextoExtendido", maxCaracteres:100, },
+    { nombreCampo:"usuario",etiqueta:"Usuario", 
+    etiquetaErrRequerido:"Se requiere un usuario para acceder al sitio", requerido:true,
+    claseCss:"campoTextoExtendido"  },
+    { nombreCampo:"password",etiqueta:"Contraseña", 
+    etiquetaErrRequerido:"Se requiere una contraseña para acceder al sitio", requerido:true,
+    claseCss:"campoTextoExtendido" },
+    { nombreCampo:"tel",etiqueta:"Teléfono",
+      etiquetaErrRequerido:"El usuario queriere un telefono", requerido:true,
+      minCaracteres:8, maxCaracteres:8,  },
+    {nombreCampo:"email",etiqueta:"Correo Electrónico",tipoDeDato:"email",},     
+    {nombreCampo:"dir",etiqueta:"Dirección", claseCss:"campoTextoExtendido",},
+    {nombreCampo:"notas",etiqueta:"Notas",claseCss:"campoTextoExtendido",},   
+  ],
   // FIN CAMPOS CLIENTE
+  // CAMPOS GASTOS
+  camposGastos:[    
+    { nombreCampo:"concepto",etiqueta:"Concepto", 
+    etiquetaErrRequerido:"El concepto del gasto es requerido", requerido:true,
+    claseCss:"campoTextoExtendido", maxCaracteres:100, },
+    {  nombreCampo: 'cantidad',etiqueta:'Cantidad',
+    requerido:true,etiquetaErrRequerido: 'La cantidad es requerida',
+    tipoDeDato:'number',steps:10,
+    claseCss:'campoNum' },   
+    {nombreCampo:"notas",etiqueta:"Notas",claseCss:"campoTextoExtendido", maxCaracteres:150,tipoDeCampo:"textarea"},
+  ],
+  // FIN CAMPOS GASTOS
 };
 
 /*

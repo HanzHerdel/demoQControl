@@ -1,5 +1,5 @@
 import { DescargasService } from './../../services/descargas/descargas.service';
-import { ComunService } from './../../services/comun.service';
+import { ComunService, animacionPag } from './../../services/comun.service';
 import { Component, OnInit } from '@angular/core';
 import { DataService } from 'src/app/services/data/data.service';
 import { Subscription, Subject } from 'rxjs';
@@ -21,37 +21,55 @@ import { Platform } from '@ionic/angular';
   templateUrl: './reportes.page.html',
   styleUrls: ['./reportes.page.scss'],
   animations: [
-    trigger('animacionPagina', [      
+	animacionPag(),
+    trigger('animacionNgIf', [      
       transition(':enter', [
-        style({  opacity: 0 }),
-        animate('1s ease-out', 
-                style({  opacity: 1 }))
+        style({ height: 0, opacity: 0 }),
+        animate('.5s ease-out', 
+                style({ height: 32, opacity: 1 }))
       ]),
       transition(':leave',          [
-        style({  opacity: 1 }),
-        animate('1s ease-in', 
-                style({ opacity: 0 }))
+        style({ height: 32, opacity: 1 }),
+        animate('.5s ease-in', 
+                style({ height: 0, opacity: 0 }))
         ]),
         ]
       ),
+		trigger('animacionNgIfDelay', [      
+			transition(':enter', [
+			  style({ height: 0, opacity: 0 }),
+			  animate('.5s .5s ease-out', 
+					  style({ height: 32, opacity: 1 }))
+			]),
+			transition(':leave',          [
+			  style({ height: 32, opacity: 1 }),
+			  animate('.5s ease-in', 
+					  style({ height: 0, opacity: 0 }))
+			  ]),
+			  ]
+			),
     ]
 })
 export class ReportesPage implements OnInit {
-  selectedItem: any;
+	/*VARIABLES VENTAS*/
 	ventas: any[]=[];
-	clientes: any;
-	total: number=0;;
-  totalCosto:number=0;
-  costos=false;
-    /************* subjet para destruir subscripcion **************/
-  desubsripcion = new Subject<void>();
-  subscripcionVentas= new Subscription;
-  /* VARIABLES DATE PICKER */
-  initDate: Date;
+	total: number=0;
+	totalCosto:number=0;
+	costos=false;
+	/**FIN VARIABLES VENTAS  */
+	/*VARIABLES GASTOS*/
+	gastos=[];
+	totalGastos:number;
+	/*FIN VARIABLES GASTOS*/
+	/*DESUBSCRIPCION DE DATOS*/
+	desubsripcion = new Subject<void>();
+	subscripcionVentas= new Subscription;
+	/* VARIABLES DATE PICKER */
+	initDate: Date;
 	endDate: Date;
 	datePickerInicio: any;	
 	datePickerFin: any;	
-  datosVenta: boolean = false
+  	datosVenta: boolean = false
 	myDatePickerOptions: IMyDpOptions = {
 		dateFormat: 'dd de mmm',
 		dayLabels: { su: 'Dom', mo: 'Lun', tu: 'Mar', we: 'Mié', th: 'Jue', fr: 'Vie', sa: 'Sáb' },
@@ -73,7 +91,7 @@ export class ReportesPage implements OnInit {
 
   ngOnInit() {
     this.establecerFechaActual();
-    this.buscarVentas();
+    this.buscarReportes();
   }
   ngOnDestroy() {
 	this.desubsripcion.next();
@@ -98,46 +116,56 @@ export class ReportesPage implements OnInit {
 		this.endDate = event.jsdate;
 		this.endDate.setDate(this.endDate.getDate() + 1);
 		//	console.log(this.endDate, "event");
-		this.buscarVentas();
+		this.buscarReportes();
 	}
 	dateInitChanged(event) {
 		this.initDate = event.jsdate;
 		console.log(this.initDate, "event");
-		this.buscarVentas();
+		this.buscarReportes();
 	}
-	buscarVentas() {
+	buscarReportes() {
 		this.datosVenta = false;
 		console.log("buscando");	
 		this.desubsripcion.next();
-		this.subscripcionVentas= this.data.getVentasReporte(this.initDate, this.endDate).pipe(takeUntil(this.desubsripcion))
-
-		.subscribe(data => {					
-			this.ventas = [];
-			this.total = 0;
-			this.totalCosto=0;	
-				data.map(venta => {
-					const data = venta.payload.doc.data() as any;
-					const id = venta.payload.doc.id;
-					let res = { id, ...data };
-					this.ventas.push(res);
-					 this.total += +data.total;
-					// this.ventas.push({...venta.data(), id:venta.id});
-					this.totalCosto+=+data.costo;
-				});
-				this.totalCosto=Math.round(this.totalCosto * 100) / 100; 
-				this.total=Math.round(this.total * 100) / 100; 
-				this.datosVenta = true;
-				console.log("********",this.ventas);
-				//sub.unsubscribe();
-				}
-		)
+		this.data.getVentasReporte(this.initDate, this.endDate).pipe(takeUntil(this.desubsripcion))
+				.subscribe(data => {					
+						this.ventas = [];
+						this.total = 0;
+						this.totalCosto=0;	
+						data.map(venta => {
+							const data = venta.payload.doc.data() as any;
+							const id = venta.payload.doc.id;
+							let res = { id, ...data };
+							this.ventas.push(res);
+							this.total += +data.total;
+							this.totalCosto+=+data.costo;
+						});
+						this.totalCosto=Math.round(this.totalCosto * 100) / 100; 
+						this.total=Math.round(this.total * 100) / 100; 
+						this.datosVenta = true;
+						}
+					)
+		this.data.getGastosReporte(this.initDate, this.endDate).pipe(takeUntil(this.desubsripcion))
+						.subscribe(data=>{
+							this.gastos=[];
+							this.totalGastos = 0;
+							data.map(venta => {
+								const data = venta.payload.doc.data() as any;
+								const id = venta.payload.doc.id;
+								let res = { id, ...data };
+								this.gastos.push(res);
+								this.totalGastos+=+data.cantidad;
+							});
+							this.totalGastos=Math.round(this.totalGastos * 100) / 100;
+							this.datosVenta = true; 
+						})
 	}
 
 	eliminarVenta(venta) {
 		this.comun.alertaConOps("Eliminar Venta","¿Está seguro de eliminar esta venta?", ()=>{
 			this.data.borrarVenta(venta.id).then(a => {
 				this.comun.alerta("Venta Deshecha", "Los artículos estan siendo regresados a la base de datos");
-				this.buscarVentas();
+				this.buscarReportes();
 			}).catch(err => { console.log(err) });
 		} )
 	}

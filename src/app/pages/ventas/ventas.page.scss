@@ -1,3 +1,29 @@
+.opsWrapper{
+  width: auto;
+  padding: 5px;
+  display: flex;
+  position: absolute;
+  top: 8px;
+  right: 25px;
+  .ops{
+      min-width: 50px;
+      width: auto;
+      align-items: center;
+      display: flex;
+      label{
+        top: 6px;
+        display: block;
+        position: fixed;
+        font-size: 90%;
+        white-space: nowrap;
+        right: 13px;
+      }
+      ion-toggle{
+          margin:5px 7px;
+      }
+  }
+}
+
 .cardTablaResultados{
   padding-bottom: 5px;
   background: var(--ion-color-medium-shade);

@@ -13,7 +13,13 @@
                [id]="campo.nombreCampo" [type]="campo.tipoDeDato" [value]="campo.valor" [placeholder]="campo.placeholder" [step]="campo.steps">
           </ion-input>
       </ng-container>
-
+      <!-- text-area -->
+      <ng-container *ngSwitchCase="'textarea'" >
+        <ion-textarea *ngIf="campo.tipoDeDato=='text'" [required]="campo.requerido" [minlength]="campo.minCaracteres"
+        [maxlength]="campo.maxCaracteres" [formControlName]="campo.nombreCampo" [disabled]="campo.disabled"
+             [id]="campo.nombreCampo" [placeholder]="campo.placeholder" [value]="campo.valor">
+        </ion-textarea>
+    </ng-container>
       <!--  campo select -->
       <ion-select *ngSwitchCase="'select'" [id]="campo.nombreCampo" [placeholder]="campo.placeholder" 
       [class]="campo.claseCss" [formControlName]="campo.nombreCampo" [interface]="campo.selectInterfaz" 

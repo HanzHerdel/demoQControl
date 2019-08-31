@@ -1,0 +1,59 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      Configuraciones
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content padding  [@animacionPagina]>
+  <div class="flexContainer">
+    <!-- LISTA DE USUARIOS -->
+    <ion-card *ngIf="true" class="configCard">	
+        <ion-card-header class="header">
+            <ion-icon name="people"></ion-icon>Usuarios Existentes
+        </ion-card-header>	
+        <ion-card-content>
+            <div *ngFor="let usuario of usuarios" class="usuarioWrapper" >
+              <div class="dataUsuarioWrapper">
+                <ion-icon name="contact" class="iconUsr"></ion-icon>
+                <div class="dataUsuario nombre">            
+                  <label >              
+                    {{usuario.nombre}}    
+                  </label>
+                </div>
+                <div class="flexBox">
+                  <div class="dataUsuario usuario">            
+                    <label ><small>Usuario: </small> {{usuario.usuario}} </label>
+                  </div>
+                  <div class="dataUsuario tel">            
+                      <label><small>Teléfono: </small> {{usuario.tel}}</label>
+                    </div>
+                  <div class="dataUsuario permisos">
+                    <label  ><small>Permisos: </small> {{usuario.tipo}}</label>
+                  </div>
+                </div>
+              </div>
+              <div  (click)="editarUsuario(usuario.id)" class="bordeEditar" >
+                  <ion-icon name="create"></ion-icon>
+                </div>
+              <div  (click)="borrarUsuario(usuario.id)" class="bordeEliminar"  >
+                <ion-icon name="trash"></ion-icon>
+              </div>
+          </div>
+      </ion-card-content>	
+    </ion-card>
+    <!--FIN LISTA DE USUARIOS -->
+    <!-- crear Usuario -->	
+    <ion-card *ngIf="true" class="configCard" id="agregarUsuarioCard"  >	
+      <ion-card-header class="header">
+          <ion-icon name="person-add"></ion-icon> Agregar Usuario
+      </ion-card-header>	
+      <ion-card-content>
+          <app-form-dinamico #formUsuario [campos]="camposUsuario" [botonLabel]="'Agregar Usuario'" (emitirDatos)=datosItemEmitidos($event) ></app-form-dinamico>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>
