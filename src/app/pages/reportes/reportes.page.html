@@ -72,14 +72,16 @@
 
  </div>
  <div *ngIf="datosVenta" [@animacionNgIfDelay] class="divGastos">
-   <label class="etiqueta">Gastos:</label>
-   <div *ngFor="let gasto of gastos" class="gastosWrapper" >
-     <div class="dataWrapper">
-       <ion-icon name="md-cash" class="icon"></ion-icon>
-       <div class="data nombre">            
-         <label >              
-           {{gasto.concepto}}    
-          </label>
+   <ng-container *ngIf="gastos.length>0" >
+    <label class="etiqueta">Gastos:</label>
+   </ng-container>
+     <div *ngFor="let gasto of gastos" class="gastosWrapper" >
+       <div class="dataWrapper">
+         <ion-icon name="md-cash" class="icon"></ion-icon>
+         <div class="data nombre">            
+           <label >              
+             {{gasto.concepto}}    
+            </label>
         </div>
         <div class="flexBox">
           <div class="data tel">            

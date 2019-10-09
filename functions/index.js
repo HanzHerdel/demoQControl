@@ -10,6 +10,37 @@ const db = admin.firestore();
 // exports.helloWorld = functions.https.onRequest((request, response) => {
 //  response.send("Hello from Firebase!");
 // });
+exports.deleteUser = functions.firestore
+    .document('usuarios/{userID}')
+    .onDelete((snap, context) => {
+    	console.log("borrado detectado");
+    	console.log(snap,context);
+      return admin.auth().deleteUser(snap.id)
+          .then(() => console.log('Usuario Eliminado:' + snap.id))
+          .catch((error) => console.error('There was an error while deleting user:', error));
+    });
+/**************** crear usuario al crear perfil de usuario****************************/
+exports.createUser = functions.firestore
+    .document('usuarios/{userID}')
+    .onCreate((snap, context) => {
+    //	console.log("creacion detectada");
+    	console.log(snap);
+    //	console.log(snap.get("nombre"));
+    	const id=snap.id;
+    	admin.firestore().doc("users/"+id).update({
+    			password:"",
+    		}).then(x =>{console.log(x)}).catch(err => console.log(err));
+        return admin.auth().createUser({
+        	uid:id,
+        	email:snap.get("correo"),
+          password:snap.get("password"),
+          id:id,
+        })
+          .then(() => console.log('Usuario creado:'+id))
+          .catch((error) => console.error('hubo un error al crear el usuario:', error));
+        // return true
+    });
+//actualizacion de las existencias, ventas totales, ganancias y bandera limite de cada item 
 exports.actualizarVentas = functions.firestore
     .document('ventas/{ventaID}')
     .onCreate((snap,context)=>{
@@ -38,7 +69,7 @@ exports.actualizarVentas = functions.firestore
         return batch.commit().then(x=>console.log('result: ',x))
                              .catch(err=>console.log('error: ',err))    
     });
-
+//eliminar ventas retorno de las unidades de item y cambio de la fecha de la ultima venta
 exports.eliminarVenta = functions.firestore
     .document('ventas/{ventaID}')
     .onDelete(async (snap,context)=>{
@@ -50,7 +81,7 @@ exports.eliminarVenta = functions.firestore
         console.log("VentaId: ",ventaId);
         var batch = db.batch();
         for (let item of data['items']){
-            const refHistorial =  db.collection('articulos').doc(item.item).collection('historial').doc(ventaId);            
+            const refHistorial = db.collection('articulos').doc(item.item).collection('historial').doc(ventaId);            
             batch.delete(refHistorial);            
             let fechaUltimaVenta =null;
             //obtener las 2 ultimas ventas del producto para actualizar la fecha de la ultima venta, si la eliminada es la actual se devuelve la siguiente

@@ -115,9 +115,10 @@ export const environment = {
     { nombreCampo:"tel",etiqueta:"Teléfono",
       etiquetaErrRequerido:"El usuario queriere un telefono", requerido:true,
       minCaracteres:8, maxCaracteres:8,  },
-    {nombreCampo:"email",etiqueta:"Correo Electrónico",tipoDeDato:"email",},     
+    {nombreCampo:"email",etiqueta:"Correo Electrónico",tipoDeDato:"email",requerido:true,},     
     {nombreCampo:"dir",etiqueta:"Dirección", claseCss:"campoTextoExtendido",},
-    {nombreCampo:"notas",etiqueta:"Notas",claseCss:"campoTextoExtendido",},   
+    {nombreCampo:"notas",etiqueta:"Notas",claseCss:"campoTexto-X",},   
+    
   ],
   // FIN CAMPOS CLIENTE
   // CAMPOS GASTOS

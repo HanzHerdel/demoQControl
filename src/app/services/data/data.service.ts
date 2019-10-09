@@ -184,23 +184,23 @@ export class DataService {
   getGastosReporte(initDay,endDay){
     return this.db.collection('gastos', ref => ref.where('fecha','<=',endDay).where('fecha','>=',initDay).orderBy('fecha','desc')).snapshotChanges();
   }
-  regresarItems(itemsDeVuelta){
-  let date= firebase.firestore.FieldValue.serverTimestamp();
-// console.log(itemsDeVuelta);
-  for(let item of itemsDeVuelta){
-  //  console.log(item);
-  this.db.collection("articulos").doc(item.item).ref.get().then(doc=>{
-  let valorActual=item.unidades + doc.data().existencias;
-  this.db.collection("articulos").doc(item.item).update({
-    "existencias" : valorActual,
-    "fechaDeModificacion":date,
-  }).then(x=>{
-    console.log(x);
-    console.log("items regresados");
-  });
-  });   
-}     
-  }
+//   regresarItems(itemsDeVuelta){
+//   let date= firebase.firestore.FieldValue.serverTimestamp();
+// // console.log(itemsDeVuelta);
+//   for(let item of itemsDeVuelta){
+//   //  console.log(item);
+//   this.db.collection("articulos").doc(item.item).ref.get().then(doc=>{
+//   let valorActual=item.unidades + doc.data().existencias;
+//   this.db.collection("articulos").doc(item.item).update({
+//     "existencias" : valorActual,
+//     "fechaDeModificacion":date,
+//   }).then(x=>{
+//     console.log(x);
+//     console.log("items regresados");
+//   });
+//   });   
+// }     
+//   }
   /** INVENTARIO */
   getAllItems(filtroLimite=false){
     if (filtroLimite)
